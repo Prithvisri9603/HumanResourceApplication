@@ -23,10 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\" />
     <Folder Include="Validators\" />
     <Folder Include="Utility\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
