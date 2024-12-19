@@ -1,6 +1,7 @@
 ﻿using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +12,26 @@ namespace HumanResourceApplication.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRepo _employeeRepo;
-        public EmployeesController(IEmployeeRepo employeeRepo)
+        private readonly EmployeeValidator _employeeValidator;
+        public EmployeesController(IEmployeeRepo employeeRepo,EmployeeValidator employeevalidator)
         {
             _employeeRepo = employeeRepo;
+            _employeeValidator = employeevalidator;
         }
         [HttpPost("Add new Employee ")]
         public async Task<IActionResult> AddEmployee(EmployeeDTO employee)
         {
+            var validationResult = await _employeeValidator.ValidateAsync(employee);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    timeStamp = DateTime.UtcNow,
+                    message = "Validation failed",
+                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
+                });
+            }
+
             try
             {
                 await _employeeRepo.AddEmployee(employee);
@@ -25,20 +39,31 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
         [HttpPut("Modify")]
         public async Task<IActionResult> ModifyEmployee(int employeeId, EmployeeDTO employee)
         {
+            var validationResult = await _employeeValidator.ValidateAsync(employee);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    timeStamp = DateTime.UtcNow,
+                    message = "Validation failed",
+                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
+                });
+            }
+
             try
             {
                 await _employeeRepo.ModifyEmployee(employeeId, employee);
-                return Ok("Record Created Successfully");
+                return Ok("Record Modified Successfully");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
         [HttpPut("Assign Job")]

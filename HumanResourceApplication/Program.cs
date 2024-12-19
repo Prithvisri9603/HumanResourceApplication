@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IEmployeeRepo, EmployeeService>();
 
 
 //----------------------------------------------------------------------------
+builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 
 var app = builder.Build();
 
