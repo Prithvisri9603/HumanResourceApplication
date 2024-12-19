@@ -61,7 +61,7 @@ namespace HumanResourceApplication.Controllers
 
 
         //Add Job 
-        [HttpPost]
+
         //public async Task<IActionResult> AddJob(JobDTO jobDTO)
         //{
         //    try
@@ -77,13 +77,13 @@ namespace HumanResourceApplication.Controllers
         //        await _jobRepository.AddJob(jobDTO);
         //        return Ok("Record Created Successfully");
         //    }
-            
+
         //    catch (Exception ex)
         //    {
         //        return BadRequest(ex.Message);
         //    }
         //}
-
+        [HttpPost]
         public async Task<IActionResult> AddJob(JobDTO jobDTO)
         {
             try
@@ -106,9 +106,28 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
-
-        //Update Job table
+        //UPDATE
         [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateJob(string id, JobDTO jobDTO)
+        {
+            try
+            {
+                var validationResult = await _validator.ValidateAsync(jobDTO);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors);
+                }
+                await _jobRepository.UpdateJob(id, jobDTO);
+                return Ok("Record Created Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+       /* [HttpPut("{id}")]
         public async Task<IActionResult> UpdateJob(string id,JobDTO jobDTO)
         {
             try
@@ -126,6 +145,10 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+       */
+
+
+
 
         [HttpPut("minsalary/maxsalary{id}")]
         public async Task<IActionResult> UpdateJobMinAndMaxSalary(string id,decimal newMin,decimal newMax)
