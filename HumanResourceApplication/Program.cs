@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
@@ -38,8 +39,11 @@ builder.Services.AddSingleton(mapper);
 
 //-------------------------------------------------------------------------------------------------------//
 
+builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
+
 //Register repository
 builder.Services.AddScoped<IJobRepository, JobServices>();
+builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
 
 var app = builder.Build();
 

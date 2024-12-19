@@ -62,5 +62,18 @@ namespace HumanResourceApplication.Services
 
         }
 
+        public async Task<JobDTO> GetJobById(string jobId)
+        {
+            var job = await _context.Jobs.FindAsync(jobId);
+
+            if (job == null)
+            {
+                return null;
+            }
+            var jobDTO = _mapper.Map<JobDTO>(job);
+            return jobDTO;
+        }
+
+
     }
 }

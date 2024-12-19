@@ -8,6 +8,7 @@ namespace HumanResourceApplication.DTO
         public MappingProfile()
         {
             CreateMap<Job, JobDTO>().ReverseMap();
+            CreateMap<JobHistory, JobHistoryDTO>().ReverseMap();
         }
 
     }

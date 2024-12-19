@@ -12,5 +12,7 @@ namespace HumanResourceApplication.Services
 
         Task UpdateJobMinAndMaxSalary(string jobId,decimal newMin, decimal newMax);
 
+        Task<JobDTO> GetJobById(string jobId);
+
     }
 }

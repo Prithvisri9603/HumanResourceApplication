@@ -1,9 +1,13 @@
-﻿using HumanResourceApplication.DTO;
+﻿using Azure.Core;
+using FluentValidation;
+using HumanResourceApplication.Validators;
+using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using System.ComponentModel.DataAnnotations;
 
 namespace HumanResourceApplication.Controllers
 {
@@ -12,10 +16,12 @@ namespace HumanResourceApplication.Controllers
     public class JobController : ControllerBase
     {
         private readonly IJobRepository _jobRepository;
+        private readonly JobsDTOValidator _validator;
 
-        public JobController(IJobRepository jobRepository)
+        public JobController(IJobRepository jobRepository, JobsDTOValidator validator)
         {
             _jobRepository = jobRepository;
+            _validator = validator;
 
         }
 
@@ -33,21 +39,64 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetJobById(string id)
+        {
+            try
+            {
+                JobDTO jobDTO = await _jobRepository.GetJobById(id);
+                if (jobDTO == null)
+                {
+                    return NotFound($"JobID {id} is not found");
+
+                }
+                return Ok(jobDTO);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         //Add Job 
         [HttpPost]
+        //public async Task<IActionResult> AddJob(JobDTO jobDTO)
+        //{
+        //    try
+        //    {
+        //        if (jobDTO == null)
+        //        {
+        //            return BadRequest();
+        //        }
+        //        else if (!ModelState.IsValid)
+        //        {
+        //            return BadRequest(ModelState);
+        //        }
+        //        await _jobRepository.AddJob(jobDTO);
+        //        return Ok("Record Created Successfully");
+        //    }
+            
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
         public async Task<IActionResult> AddJob(JobDTO jobDTO)
         {
             try
             {
-                if (jobDTO == null)
+               
+                // Explicitly validate the JobDTO
+                var validationResult = await _validator.ValidateAsync(jobDTO);
+
+                if (!validationResult.IsValid)
                 {
-                    return BadRequest();
+                    return BadRequest(validationResult.Errors);
                 }
-                else if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+
                 await _jobRepository.AddJob(jobDTO);
                 return Ok("Record Created Successfully");
             }
@@ -56,6 +105,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         //Update Job table
         [HttpPut("{id}")]
@@ -84,6 +134,7 @@ namespace HumanResourceApplication.Controllers
             {
                 await _jobRepository.UpdateJobMinAndMaxSalary(id,newMin, newMax);
                 return Ok("Success");
+                //return CreatedAtAction("GetJobById", new { id = });
             }
             catch (Exception ex)
             {
