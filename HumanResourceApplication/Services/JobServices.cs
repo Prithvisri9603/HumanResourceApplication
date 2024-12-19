@@ -2,6 +2,7 @@
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 
 namespace HumanResourceApplication.Services
 {
@@ -35,23 +36,31 @@ namespace HumanResourceApplication.Services
 
 
         //Update with new Job details
-        public async Task UpdateJob(int jobId, JobDTO jobDTO)
+        public async Task UpdateJob(string jobId, JobDTO jobDTO)
         {
             var job = await _context.Jobs.FindAsync(jobId);
             
             if(job != null)
             {
-                _context.Entry(jobDTO).CurrentValues.SetValues(job);
+                _context.Entry(job).CurrentValues.SetValues(jobDTO);
             }
             await _context.SaveChangesAsync();
 
         }
 
-        //public async Task UpdateJobMinAndMaxSalary(decimal newMin, decimal newMax)
-        //{
+        public async Task UpdateJobMinAndMaxSalary(string jobID,decimal newMin, decimal newMax)
+        {
+            var job = await _context.Jobs.FindAsync(jobID);
 
+            if (job != null)
+            {
+                job.MinSalary = newMin;
+                job.MaxSalary = newMax;
 
-        //}
+                await _context.SaveChangesAsync();
+            }
+
+        }
 
     }
 }

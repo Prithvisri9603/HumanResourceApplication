@@ -8,9 +8,9 @@ namespace HumanResourceApplication.Services
         Task<List<JobDTO>> GetAllJobs();
         Task AddJob(JobDTO jobDTO);
 
-        Task UpdateJob(int jobId,JobDTO jobDTO);
+        Task UpdateJob(string jobId,JobDTO jobDTO);
 
-        // Task UpdateJobMinAndMaxSalary(decimal newMin, decimal newMax);
+        Task UpdateJobMinAndMaxSalary(string jobId,decimal newMin, decimal newMax);
 
     }
 }
