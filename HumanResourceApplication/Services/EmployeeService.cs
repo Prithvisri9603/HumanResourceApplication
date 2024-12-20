@@ -34,22 +34,23 @@ namespace HumanResourceApplication.Services
             await _context.SaveChangesAsync();
             // return "Employee id not found";
         }
-        public async Task AssignJob(string jobId)
+        public async Task AssignJob(string currentJobId, string newJobId)
         {
-            // Find the first employee without a job assigned
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.JobId == null);
+            // Find the employee matching the current JobId
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.JobId == currentJobId);
 
             if (employee == null)
             {
-                throw new Exception("Given Job Id does'nt exist");
+                throw new Exception($"No employee found with JobId '{currentJobId}'.");
             }
 
-            // Assign the job to the selected employee
-            employee.JobId = jobId;
+            // Update the JobId for the matched employee
+            employee.JobId = newJobId;
 
             // Save changes to the database
             await _context.SaveChangesAsync();
         }
+
 
         public async Task AssignMan(decimal employeeId, decimal managerId)
         {
@@ -97,90 +98,133 @@ namespace HumanResourceApplication.Services
         public async Task<EmployeeDTO> FindByFirstName(string firstName)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.FirstName == firstName);
+            if (employee == null)
+            {
+                throw new Exception($"No employee found with the first name: {firstName}");
+            }
             return _mapper.Map<EmployeeDTO>(employee);
         }
+
         public async Task<EmployeeDTO> FindByEmail(string email)
         {
-            var employee= await _context.Employees.FirstOrDefaultAsync(e =>e.Email == email);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
+            if (employee == null)
+            {
+                throw new Exception($"No employee found with the email: {email}");
+            }
             return _mapper.Map<EmployeeDTO>(employee);
         }
+
         public async Task<EmployeeDTO> FindByPhoneNumber(string phone)
         {
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.PhoneNumber==phone);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.PhoneNumber == phone);
+            if (employee == null)
+            {
+                throw new Exception($"No employee found with the phone number: {phone}");
+            }
             return _mapper.Map<EmployeeDTO>(employee);
         }
+
         public async Task<List<EmployeeDTO>> FindAllEmployeeWithNoCommission()
         {
-            var employee = await _context.Employees.Where(e => e.CommissionPct==null).ToListAsync();
-            return _mapper.Map<List<EmployeeDTO>>(employee);
+            var employees = await _context.Employees.Where(e => e.CommissionPct == null).ToListAsync();
+            if (!employees.Any())
+            {
+                throw new Exception("No employees found with no commission.");
+            }
+            return _mapper.Map<List<EmployeeDTO>>(employees);
         }
+
         public async Task<decimal> FindTotalCommissionIssuedToDepartment(decimal departmentId)
         {
-            return await _context.Employees
-           .Where(e => e.DepartmentId == departmentId && e.CommissionPct != null)
-           .SumAsync(e => e.CommissionPct ?? 0);
+            var departmentExists = await _context.Departments.AnyAsync(d => d.DepartmentId == departmentId);
+            if (!departmentExists)
+            {
+                throw new Exception($"Department with ID {departmentId} does not exist.");
+            }
+
+            var totalCommission = await _context.Employees
+                .Where(e => e.DepartmentId == departmentId && e.CommissionPct != null)
+                .SumAsync(e => e.CommissionPct ?? 0);
+
+            return totalCommission;
         }
+
         public async Task<List<EmployeeDTO>> ListAllEmployeesByDepartment(decimal departmentId)
         {
-            var employee = await _context.Employees.Where(e => e.DepartmentId==departmentId).ToListAsync();
-            return _mapper.Map<List<EmployeeDTO>>(employee);
+            var employees = await _context.Employees.Where(e => e.DepartmentId == departmentId).ToListAsync();
+            if (!employees.Any())
+            {
+                throw new Exception($"No employees found for department ID {departmentId}.");
+            }
+            return _mapper.Map<List<EmployeeDTO>>(employees);
         }
+
         public async Task<List<EmployeeDTO>> ListAllManagerDetails()
         {
-            var employee=await _context.Employees.Where(e=>e.ManagerId!=null).ToListAsync();
-            return _mapper.Map<List<EmployeeDTO>>(employee);
+            var managers = await _context.Employees.Where(e => e.ManagerId != null).ToListAsync();
+            if (!managers.Any())
+            {
+                throw new Exception("No manager details found.");
+            }
+            return _mapper.Map<List<EmployeeDTO>>(managers);
         }
+
         public async Task<Dictionary<decimal, int>> CountAllEmployeesGroupByLocation()
         {
             var result = await _context.Employees.Join(
-                 _context.Departments, 
-                 employee => employee.DepartmentId, 
-                 department => department.DepartmentId,
-                 (employee, department) => new { department.LocationId, employee.EmployeeId }
-             )
-             .GroupBy(x => x.LocationId) 
-             .Select(g => new { LocationId = g.Key ?? 0, EmployeeCount = g.Count() })
-             .ToDictionaryAsync(g => g.LocationId, g => g.EmployeeCount);
+                _context.Departments,
+                employee => employee.DepartmentId,
+                department => department.DepartmentId,
+                (employee, department) => new { department.LocationId, employee.EmployeeId }
+            )
+            .GroupBy(x => x.LocationId)
+            .Select(g => new { LocationId = g.Key ?? 0, EmployeeCount = g.Count() })
+            .ToDictionaryAsync(g => g.LocationId, g => g.EmployeeCount);
+
+            if (!result.Any())
+            {
+                throw new Exception("No employee data found grouped by location.");
+            }
 
             return result;
         }
+
         public async Task<(string JobDescription, decimal MaxSalary)> FindMaxSalaryOfJobByEmployeeId(decimal employeeId)
         {
-            // Find the employee by ID
             var employee = await _context.Employees.FindAsync(employeeId);
             if (employee == null)
             {
-                throw new Exception("Employee not found");
+                throw new Exception($"Employee with ID {employeeId} not found.");
             }
 
-            // Get the JobId of the employee
             var jobId = employee.JobId;
-
-            // Find the job description for the given JobId
             var job = await _context.Jobs.FirstOrDefaultAsync(j => j.JobId == jobId);
             if (job == null)
             {
-                throw new Exception("Job not found");
+                throw new Exception($"Job not found for the employee ID {employeeId}.");
             }
 
-            // Find the maximum salary for employees with the same JobId
             var maxSalary = await _context.Employees
                 .Where(e => e.JobId == jobId)
                 .MaxAsync(e => e.Salary ?? 0);
 
-            // Return the JobDescription and MaxSalary
             return (job.JobTitle, maxSalary);
         }
-        public async Task UpdateEmployeeEmail(string email, EmployeeDTO employee)
-        {
-            var employees = await _context.Employees.FirstOrDefaultAsync(e => e.Email==email);
-            if (employee != null)
-            {
-                _mapper.Map(employee, employees);
-                employee.Email = email;
 
-                await _context.SaveChangesAsync();
+        public async Task UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
+            if (employee == null)
+            {
+                throw new Exception($"Employee with email {email} not found.");
             }
+
+            _mapper.Map(employeeDto, employee);
+            employee.Email = email;
+
+            await _context.SaveChangesAsync();
         }
+
     }
 }

@@ -67,22 +67,19 @@ namespace HumanResourceApplication.Controllers
             }
         }
         [HttpPut("Assign Job")]
-        public async Task<IActionResult> AssignJob(string jobId)
+        public async Task<IActionResult> AssignJob([FromQuery] string currentJobId, [FromQuery] string newJobId)
         {
             try
             {
-                await _employeeRepo.AssignJob(jobId);
-                return Ok(new
-                {
-                    message = "Job assigned successfully",
-                    jobId = jobId
-                });
+                await _employeeRepo.AssignJob(currentJobId, newJobId);
+                return Ok("Record Modified Successfully");
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                return BadRequest(new{timeStamp = DateOnly.FromDateTime(DateTime.Now),message = ex.Message});
             }
         }
+
 
         [HttpPut("Assign Manager")]
         public async Task<IActionResult> AssignMan(decimal employeeId, decimal managerId)
@@ -94,7 +91,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
 
@@ -108,7 +105,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
 
@@ -122,7 +119,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
         [HttpGet("find by fisrt name")]
@@ -135,7 +132,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
 
@@ -149,9 +146,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
 
             [HttpGet("find phone")]
             public async Task<IActionResult> FindByPhoneNumber(string phone)
@@ -163,9 +160,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
 
             [HttpGet("find All Employee With No Commission")]
             public async Task<IActionResult> FindAllEmployeeWithNoCommission()
@@ -177,9 +174,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
 
             [HttpGet("find Total Commission Issued To Employee")]
             public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
@@ -191,9 +188,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
 
             [HttpGet("list All Employees by department")]
             public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
@@ -205,9 +202,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
 
             [HttpGet("list All Manager Details")]
             public async Task<IActionResult> ListAllManagerDetails()
@@ -219,9 +216,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
 
             [HttpGet("location wise count of employees")]
             public async Task<IActionResult> CountAllEmployeesGroupByLocation()
@@ -233,9 +230,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
         [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
         {
@@ -246,7 +243,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
 
@@ -260,9 +257,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
-                }
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
+        }
         }
     }
 
