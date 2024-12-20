@@ -34,16 +34,20 @@ builder.Services.AddScoped<ICountryRepository, CountryService>();
 builder.Services.AddScoped<IJobRepository, JobServices>();
 builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
 builder.Services.AddScoped<ILocationRepository, LocationServices>();
+builder.Services.AddScoped<IRegionRepository, RegionServices>();
+builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
+
 // Configure FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<RegionDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<DepartmentDTOValidator>();
 
 // Adding Authentication
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -67,13 +71,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 builder.Services.AddAuthorization();
 
 // Swagger configuration
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -101,7 +102,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -113,6 +113,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

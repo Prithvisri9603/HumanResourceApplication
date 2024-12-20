@@ -3,6 +3,7 @@ using HumanResourceApplication.Models;
 
 namespace HumanResourceApplication.DTO
 {
+
     public class MappingProfile : Profile
     {
 
@@ -13,7 +14,10 @@ namespace HumanResourceApplication.DTO
             CreateMap<JobHistory, JobHistoryDTO>().ReverseMap();
             CreateMap<Country, CountryDTO>().ReverseMap();
             CreateMap<Location, LocationDTO>().ReverseMap();
+            CreateMap<Region, RegionDTO>().ReverseMap();
+            CreateMap<Department, DepartmentDTO>().ReverseMap();
         }
+
 
 
     }
