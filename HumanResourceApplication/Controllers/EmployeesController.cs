@@ -67,44 +67,51 @@ namespace HumanResourceApplication.Controllers
             }
         }
         [HttpPut("Assign Job")]
-        public async Task<IActionResult> AssignJob(string JobId, EmployeeDTO employee)
+        public async Task<IActionResult> AssignJob(string jobId)
         {
             try
             {
-                await _employeeRepo.AssignJob(JobId, employee);
-                return Ok("Record Created Successfully");
+                await _employeeRepo.AssignJob(jobId);
+                return Ok(new
+                {
+                    message = "Job assigned successfully",
+                    jobId = jobId
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
+
         [HttpPut("Assign Manager")]
-        public async Task<IActionResult> AssignMan(decimal ManagerId, EmployeeDTO employee)
+        public async Task<IActionResult> AssignMan(decimal employeeId, decimal managerId)
         {
             try
             {
-                await _employeeRepo.AssignMan(ManagerId, employee);
-                return Ok("Record Created Successfully");
+                await _employeeRepo.AssignMan(employeeId, managerId);
+                return Ok("Record Modified Successfully");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
+
         [HttpPut("Assign Department")]
-        public async Task<IActionResult> AssignDep(decimal DepartmentId, EmployeeDTO employee)
+        public async Task<IActionResult> AssignDep(decimal employeeId, decimal departmentId)
         {
             try
             {
-                await _employeeRepo.AssignDep(DepartmentId, employee);
-                return Ok("Record Created Successfully");
+                await _employeeRepo.AssignDep(employeeId, departmentId);
+                return Ok("Record Modified Successfully");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
+
         [HttpPut("update Commission for sales department")]
         public async Task<IActionResult> UpdateCommissionForDepartment(decimal departmentId, [FromQuery] decimal commissionPercentage)
         {
@@ -115,7 +122,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
         [HttpGet("find by fisrt name")]
@@ -128,7 +135,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
             }
         }
 
@@ -146,7 +153,7 @@ namespace HumanResourceApplication.Controllers
                 }
             }
 
-            [HttpGet("findphone/{phone}")]
+            [HttpGet("find phone")]
             public async Task<IActionResult> FindByPhoneNumber(string phone)
             {
                 try
@@ -160,7 +167,7 @@ namespace HumanResourceApplication.Controllers
                 }
             }
 
-            [HttpGet("findAllEmployeeWithNoCommission")]
+            [HttpGet("find All Employee With No Commission")]
             public async Task<IActionResult> FindAllEmployeeWithNoCommission()
             {
                 try
@@ -174,7 +181,7 @@ namespace HumanResourceApplication.Controllers
                 }
             }
 
-            [HttpGet("findTotalCommissionIssuedToEmployee/{departmentId}")]
+            [HttpGet("find Total Commission Issued To Employee")]
             public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
             {
                 try
@@ -188,7 +195,7 @@ namespace HumanResourceApplication.Controllers
                 }
             }
 
-            [HttpGet("listAllEmployees/{departmentId}")]
+            [HttpGet("list All Employees by department")]
             public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
             {
                 try
@@ -202,7 +209,7 @@ namespace HumanResourceApplication.Controllers
                 }
             }
 
-            [HttpGet("listAllManagerDetails")]
+            [HttpGet("list All Manager Details")]
             public async Task<IActionResult> ListAllManagerDetails()
             {
                 try
@@ -216,7 +223,7 @@ namespace HumanResourceApplication.Controllers
                 }
             }
 
-            [HttpGet("locationwisecountofemployees")]
+            [HttpGet("location wise count of employees")]
             public async Task<IActionResult> CountAllEmployeesGroupByLocation()
             {
                 try
@@ -229,7 +236,7 @@ namespace HumanResourceApplication.Controllers
                     return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
                 }
             }
-        [HttpGet("{empid}/findmaxsalaryofjob")]
+        [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
         {
             try
@@ -243,7 +250,7 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
-        [HttpPut("{email}")]
+        [HttpPut("Update Email")]
             public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
             {
                 try

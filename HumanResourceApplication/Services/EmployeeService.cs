@@ -34,54 +34,44 @@ namespace HumanResourceApplication.Services
             await _context.SaveChangesAsync();
             // return "Employee id not found";
         }
-        public async Task AssignJob(string JobId, EmployeeDTO employee)
+        public async Task AssignJob(string jobId)
         {
-            var employeedata = await _context.Employees.FindAsync(JobId);
-            //if (employeedata == null)
-            //{
-            //   // return "Job Id Invalid";
-            //}
+            // Find the first employee without a job assigned
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.JobId == null);
 
-            _mapper.Map(employee, employeedata);
-
-            // Update the JobId in the Employee entity
-            employeedata.JobId = JobId;
-
-            // Save changes to the database
-            await _context.SaveChangesAsync();
-
-            //return "Record Modified Successfully";
-        }
-        public async Task AssignMan(decimal ManagerId, EmployeeDTO employee)
-        {
-            var employeeEntity = await _context.Employees.FindAsync(ManagerId);
-            //if (employeeEntity == null)
-            //{
-            //    return "Manager Not found";
-            //}
-            // Map the EmployeeDTO to the Employee entity
-            _mapper.Map(employee, employeeEntity);
-
-            // Assign the managerId to the ManagerId field
-            employeeEntity.ManagerId = ManagerId;
-
-            // Save changes to the database
-            await _context.SaveChangesAsync();
-
-            // return "Record Modified Successfully";
-        }
-        public async Task AssignDep(decimal DepartmentId, EmployeeDTO employee)
-        {
-            var employeedata = await _context.Employees.FindAsync(DepartmentId);
-            if (employeedata != null)
+            if (employee == null)
             {
-                _context.Entry(employee).CurrentValues.SetValues(employeedata);
+                throw new Exception("Given Job Id does'nt exist");
             }
+
+            // Assign the job to the selected employee
+            employee.JobId = jobId;
+
+            // Save changes to the database
             await _context.SaveChangesAsync();
-            //_mapper.Map(employee, employeedata);
-            //employeedata.DepartmentId = DepartmentId;
-            //await _context.SaveChangesAsync();
-            //return "Record Modified Successfully";
+        }
+
+        public async Task AssignMan(decimal employeeId, decimal managerId)
+        {
+            var employee = await _context.Employees.FindAsync(employeeId);
+            if (employee == null)
+                throw new Exception($"Employee with ID {employeeId} not found.");
+
+            employee.ManagerId = managerId;
+
+            _context.Entry(employee).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+        public async Task AssignDep(decimal employeeId, decimal departmentId)
+        {
+            var employee = await _context.Employees.FindAsync(employeeId);
+            if (employee == null)
+                throw new Exception($"Employee with ID {employeeId} not found.");
+
+            employee.DepartmentId = departmentId;
+
+            _context.Entry(employee).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
         public async Task UpdateCommissionForDepartment(decimal departmentId, decimal commissionPercentage)
         {

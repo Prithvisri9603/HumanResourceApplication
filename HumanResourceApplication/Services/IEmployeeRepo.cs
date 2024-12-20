@@ -6,9 +6,9 @@ namespace HumanResourceApplication.Services
     {
         Task AddEmployee(EmployeeDTO employee);
         Task ModifyEmployee(int  employeeId,EmployeeDTO employee);
-        Task AssignJob(string JobId, EmployeeDTO employee);
-        Task  AssignMan( decimal ManagerId, EmployeeDTO employee);
-        Task AssignDep(decimal DepartmentId, EmployeeDTO employee);
+        Task AssignJob(string jobId);
+        Task AssignMan(decimal employeeId, decimal managerId);
+        Task AssignDep(decimal employeeId, decimal departmentId);
         Task UpdateCommissionForDepartment(decimal departmentId, decimal commissionPercentage);
         Task<EmployeeDTO> FindByFirstName(string firstName);
         Task<EmployeeDTO> FindByEmail(string email);
