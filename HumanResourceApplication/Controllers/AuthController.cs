@@ -15,7 +15,17 @@ namespace HumanResourceApplication.Controllers
         {
             _authservice = authRepository;
         }
-/*
+        /*
+        #region Login
+
+        /// <summary>
+        /// Authenticates a user using their username and password.
+        /// </summary>
+        /// <param name="loginDTO">The login credentials containing username and password.</param>
+        /// <returns>
+        /// Returns an HTTP 200 OK response with the generated token if authentication is successful.
+        /// Returns an HTTP 401 Unauthorized response if authentication fails.
+        /// </returns>
 
         [HttpPost("Login")]
         public IActionResult Authenticate([FromBody] LoginDTO loginDTO)
@@ -26,8 +36,9 @@ namespace HumanResourceApplication.Controllers
                 return Unauthorized();
             }
             return Ok(token);
-      }*/
-
+        }
+        #endregion
+        */
     }
 }
 

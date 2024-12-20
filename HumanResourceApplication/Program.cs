@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+/*
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -39,7 +40,7 @@ builder.Services.AddAuthentication(options =>
         (Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
     };
 });
-
+*/
 builder.Services.AddAuthorization();
 
 
@@ -66,12 +67,15 @@ builder.Services.AddSingleton(mapper);
 
 //Register the repository
 builder.Services.AddScoped<ILocationRepository, LocationServices>();
+//builder.Services.AddScoped<IAuthServices, AuthServices>();
 
 //configure the fluentvalidation
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
 
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+/*
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -98,7 +102,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
+*/
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

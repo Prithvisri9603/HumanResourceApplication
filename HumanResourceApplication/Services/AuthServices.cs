@@ -19,6 +19,20 @@ namespace HumanResourceApplication.Services
             _configuration = configuration;
         }
         /*
+        #region Authenticate
+
+        /// <summary>
+        /// Authenticates a user by validating their username and password, and generates a JWT token upon successful authentication.
+        /// </summary>
+        /// <param name="username">The username of the user attempting to authenticate.</param>
+        /// <param name="password">The password of the user attempting to authenticate.</param>
+        /// <returns>
+        /// A JWT token string if authentication is successful; otherwise, returns null if the user credentials are invalid.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the configuration is not initialized or when the JWT settings (Key, Audience, Issuer) are missing or invalid.
+        /// </exception>
+
         public string Authenticate(string username, string password)
         {
             var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == username && u.Passwordhash == password);
@@ -59,9 +73,10 @@ namespace HumanResourceApplication.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
-        }*/
- 
-}
+        }
+        #endregion
+        */
+    }
 
 }
 

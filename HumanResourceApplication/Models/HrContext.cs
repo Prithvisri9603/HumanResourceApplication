@@ -248,7 +248,7 @@ public partial class HrContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC27683C6AC2");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC276BD6D868");
 
             entity.ToTable("Role");
 
@@ -258,7 +258,7 @@ public partial class HrContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07AD41ADEC");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC0781664666");
 
             entity.Property(e => e.Passwordhash).HasMaxLength(255);
             entity.Property(e => e.Username).HasMaxLength(100);

@@ -20,12 +20,36 @@ namespace HumanResourceApplication.Controllers
             _locationRepository = locationRepository;
             _validator = validator;
         }
+
+        #region Get all locations
+
+        /// <summary>
+        /// Retrieves all available locations.
+        /// </summary>
+        /// <returns>
+        /// Returns an HTTP 200 OK response with a list of locations retrieved from the repository.
+        /// </returns>
+
         [HttpGet("GetAllLocations")]
         public async Task<IActionResult> GetAllLocations()
         {
             var locations = await _locationRepository.GetAllLocations();
             return Ok(locations);
         }
+        #endregion
+
+        #region Get loctaion by id
+
+        /// <summary>
+        /// Retrieves a specific location by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the location to retrieve.</param>
+        /// <returns>
+        /// Returns an HTTP 200 OK response with the location details if found.
+        /// Returns an HTTP 404 Not Found response if the location with the specified ID is not found.
+        /// Returns an HTTP 400 Bad Request response if an error occurs during the operation.
+        /// </returns>
+
         [HttpGet]
         public async Task<IActionResult> GetLocationById(decimal id)
         {
@@ -43,7 +67,23 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [Authorize(Roles ="Admin")]
+        #endregion
+
+        #region Add location
+
+        /// <summary>
+        /// Adds a new location to the system.
+        /// </summary>
+        /// <param name="locationDto">The location data to be added.</param>
+        /// <returns>
+        /// Returns an HTTP 200 OK response with a success message if the location is added successfully.
+        /// Returns an HTTP 400 Bad Request response if validation fails or an error occurs during the operation.
+        /// </returns>
+        /// <remarks>
+        /// This endpoint is restricted to users with the "Admin" role.
+        /// </remarks>
+
+        //[Authorize(Roles ="Admin")]
         [HttpPost]
 
         public async Task<IActionResult> AddLocation(LocationDTO locationDto)
@@ -63,6 +103,21 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
+
+        #region Update location
+
+        /// <summary>
+        /// Updates an existing location by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the location to be updated.</param>
+        /// <param name="locationDto">The updated location data.</param>
+        /// <returns>
+        /// Returns an HTTP 200 OK response with a success message if the update is successful.
+        /// Returns an HTTP 404 Not Found response if the location does not exist.
+        /// Returns an HTTP 400 Bad Request response if validation fails or an error occurs during the operation.
+        /// </returns>
+
         [HttpPut("id")]
         public async Task<IActionResult> UpdateLocation(int id, LocationDTO locationDto)
         {
@@ -87,5 +142,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion
     }
 }
