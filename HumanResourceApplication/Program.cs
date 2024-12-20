@@ -1,11 +1,14 @@
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using HumanResourceApplication.DTO;
-using HumanResourceApplication.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
-using HumanResourceApplication.Models;
 using FluentValidation;
+using HumanResourceApplication.DTO;
+using HumanResourceApplication.Models;
+using HumanResourceApplication.Services;
 using HumanResourceApplication.Validators;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,16 +33,74 @@ builder.Services.AddScoped<IEmployeeRepo, EmployeeService>();
 builder.Services.AddScoped<ICountryRepository, CountryService>();
 builder.Services.AddScoped<IJobRepository, JobServices>();
 builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
-
+builder.Services.AddScoped<ILocationRepository, LocationServices>();
+builder.Services.AddScoped<IAuthServices, AuthServices>();
 // Configure FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Adding Authentication
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey
+        (Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+    };
+});
+
+
+builder.Services.AddAuthorization();
+
+// Swagger configuration
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Bearer Authentication with JWT Token",
+        Type = SecuritySchemeType.Http
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
+});
+
 
 var app = builder.Build();
 

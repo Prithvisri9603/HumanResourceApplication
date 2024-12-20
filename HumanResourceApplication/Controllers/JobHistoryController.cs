@@ -15,8 +15,6 @@ namespace HumanResourceApplication.Controllers
         private readonly IJobHistoryRepository _repository;
         private readonly JobHistoryDTOValidator _validator;
 
-
-
         public JobHistoryController(IJobHistoryRepository repository, JobHistoryDTOValidator validator)
         {
             _repository = repository;
