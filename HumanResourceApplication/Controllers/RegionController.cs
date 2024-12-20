@@ -22,11 +22,7 @@ namespace HumanResourceApplication.Controllers
             _regionValidator = regionValidator;
             _configuration = configuration;
         }
-        /// <summary>
-        /// Adding new region
-        /// </summary>
-        /// <param name="region"></param>
-        /// <returns></returns>
+        #region AddNewRegion
         [HttpPost("AddRegion")]
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
         {
@@ -50,6 +46,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
+
+        #region UpdateRegion
 
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateRegion(decimal regionId, RegionDTO regiondto)
@@ -73,6 +72,9 @@ namespace HumanResourceApplication.Controllers
 
             }
         }
+        #endregion
+
+        #region ListAllRegion
 
         [HttpGet("GetAllRegion")]
 
@@ -88,6 +90,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
+
+        #region GetRegionById
 
         [HttpGet("{region_Id}/id")]
         public async Task<IActionResult> GetRegionById(decimal region_Id)
@@ -107,6 +112,9 @@ namespace HumanResourceApplication.Controllers
                 return Ok(ex.Message);
             }
         }
+        #endregion
+
+        #region DeleteById
 
         [HttpDelete("{region_id}/Delete")]
         public async Task<IActionResult> DeleteById(decimal region_id)
@@ -128,16 +136,17 @@ namespace HumanResourceApplication.Controllers
                 return Ok(new { message = "Region deleted successfully" });
             }
         
-                 catch (Exception ex)
+             catch (Exception ex)
                 {
         
                 return Ok(ex.Message);
-                }
-    }
+              }
+             }
            
         }
+    #endregion
 
 
 
-   }
+}
 
