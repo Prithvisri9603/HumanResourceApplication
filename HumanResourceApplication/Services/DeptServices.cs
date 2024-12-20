@@ -59,7 +59,7 @@ namespace HumanResourceApplication.Services
         public async Task UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
         {
             var findId = await _hrContext.Departments.FindAsync(departmentId);
-            var deptUpt = _mapper.Map<DepartmentDTO>(findId);
+            var deptUpt = _mapper.Map<Department>(findId);
             if (deptUpt != null)
             {
 

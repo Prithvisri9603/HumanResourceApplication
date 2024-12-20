@@ -137,11 +137,11 @@ namespace HumanResourceApplication.Controllers
         #region GetAllDeptDetailsForEmp
         [HttpGet("{Emp_id}")]
 
-        public async Task<IActionResult> GetAllDeptDetailsForEmp(decimal emp_id)
+        public async Task<IActionResult> GetAllDeptDetailsForEmp(decimal Emp_id)
         {
             try
             {
-                var result = await _departmentrepository.GetAllDeptDetailsForEmp(emp_id);
+                var result = await _departmentrepository.GetAllDeptDetailsForEmp(Emp_id);
                 if (result == null || !result.Any())
                 {
                     return NotFound(new { Message = "No departments found for the given employee ID." });
