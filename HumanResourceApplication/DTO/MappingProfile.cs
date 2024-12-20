@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using HumanResourceApplication.Models;
-
 namespace HumanResourceApplication.DTO
 {
     public class MappingProfile : Profile
@@ -11,6 +10,7 @@ namespace HumanResourceApplication.DTO
             CreateMap<Employee,EmployeeDTO>().ReverseMap();
             CreateMap<Job, JobDTO>().ReverseMap();
             CreateMap<JobHistory, JobHistoryDTO>().ReverseMap();
+            CreateMap<Country, CountryDTO>().ReverseMap();
         }
 
     }
