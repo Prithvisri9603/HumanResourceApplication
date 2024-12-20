@@ -258,8 +258,8 @@ namespace HumanResourceApplication.Controllers
                 catch (Exception ex)
                 {
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+                }
             }
-        }
         }
     }
 
