@@ -5,18 +5,20 @@ namespace HumanResourceApplication.Services
     public interface IJobHistoryRepository
     {
         //GET
-        Task<(int years, int months, int days)> FindExperienceOfEmployees(decimal id);
-        /*
-        Task<List<JobHistoryDTO>> EmployeesWithLessThanOneYearExp();
+        Task<TimeSpan?> FindExperienceOfEmployees(decimal id);
 
+        Task<List<JobHistoryDTO>> GetAllJobHistory();
 
+        //Task<List<JobHistoryDTO>> EmployeesWithLessThanOneYearExp(decimal id);
+
+        Task<TimeSpan?> GetTotalExperienceByEmployeeIdAsync(int empId);
         //POST
-        Task AddJobHistory( JobHistoryDTO jobHistoryDTO );
+        Task AddJobHistory( decimal empId, DateOnly startDate, string jobId, decimal deptId );
 
 
         //PUT
-        Task UpdateJobHistory(decimal id, DateOnly newEndDate);
-        */
+        Task UpdateJobHistory(decimal id, DateOnly newStartDate, DateOnly newEndDate);
+        
     }
 
 }

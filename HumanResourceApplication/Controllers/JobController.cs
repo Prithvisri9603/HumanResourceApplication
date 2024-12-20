@@ -59,7 +59,6 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
-
         //Add Job 
 
         //public async Task<IActionResult> AddJob(JobDTO jobDTO)
