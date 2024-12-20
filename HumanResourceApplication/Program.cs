@@ -3,6 +3,9 @@ using FluentValidation;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+
+using Microsoft.Data.SqlClient;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +20,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<HrContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//---------------------------------------------------------------------------------------------------
-
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new MappingProfile());
@@ -29,14 +30,21 @@ IMapper mapper = mapperConfig.CreateMapper();
 
 //register the mapper instance to the service container
 builder.Services.AddSingleton(mapper);
-// Register the repository
+
 builder.Services.AddScoped<IEmployeeRepo, EmployeeService>();
 
 
-//----------------------------------------------------------------------------
 builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 
+builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
+
+builder.Services.AddScoped<IJobRepository, JobServices>();
+builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
+
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
