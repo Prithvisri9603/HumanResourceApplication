@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HumanResourceApplication.Controllers
 {
@@ -25,7 +26,8 @@ namespace HumanResourceApplication.Controllers
 
         }
 
-        #region Get Job methods
+        #region Get methods
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet]
         public async Task<IActionResult> GetJobs()
         {
@@ -39,7 +41,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest("Bad request bro");
             }
         }
-
+        
+        [Authorize(Roles = "Admin,HR Team")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetJobById(string id)
         {
@@ -85,6 +88,7 @@ namespace HumanResourceApplication.Controllers
         //        return BadRequest(ex.Message);
         //    }
         //}
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddJob(JobDTO jobDTO)
         {
@@ -111,6 +115,7 @@ namespace HumanResourceApplication.Controllers
 
         #region Update Job methods
         //UPDATE
+        [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateJob(string id, JobDTO jobDTO)
         {
@@ -131,29 +136,29 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
-       /* [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJob(string id,JobDTO jobDTO)
-        {
-            try
-            {
-                if (jobDTO == null)
-                {
-                    return BadRequest($"Job {id} was not found");
-                }
-                await _jobRepository.UpdateJob(id, jobDTO);
-                return Ok("Record Modified Successfully");
+        /* [HttpPut("{id}")]
+         public async Task<IActionResult> UpdateJob(string id,JobDTO jobDTO)
+         {
+             try
+             {
+                 if (jobDTO == null)
+                 {
+                     return BadRequest($"Job {id} was not found");
+                 }
+                 await _jobRepository.UpdateJob(id, jobDTO);
+                 return Ok("Record Modified Successfully");
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-       */
-
-
+             }
+             catch (Exception ex)
+             {
+                 return BadRequest(ex.Message);
+             }
+         }
+        */
 
 
+
+        [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("minsalary/maxsalary{id}")]
         public async Task<IActionResult> UpdateJobMinAndMaxSalary(string id,decimal newMin,decimal newMax)
         {
