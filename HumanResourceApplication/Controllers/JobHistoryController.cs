@@ -20,13 +20,15 @@ namespace HumanResourceApplication.Controllers
             _repository = repository;
             _validator = validator;
         }
+
+
         /// <summary>
         /// Implemented required endpoints
         /// </summary>
         /// <returns></returns>
-
-
         //Get all job history available of all employees
+
+        #region Get All Job History
         [HttpGet]
         public async Task<IActionResult> GetAllJobHistory()
         {
@@ -40,9 +42,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
-
-
+        #region Total years of experience
         //Gets employees total years of experience 
         [HttpGet("{id}")]
         public async Task<IActionResult> totalyearsofexperience(decimal id)
@@ -73,6 +75,7 @@ namespace HumanResourceApplication.Controllers
             }
 
         }
+        #endregion
 
         //Fetch employees with less than one year of experience
         [HttpGet("lessthanoneyearexperience/{emp_id}")]
