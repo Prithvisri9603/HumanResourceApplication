@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +21,9 @@ namespace HumanResourceApplication.Controllers
             _countryRepository = countryRepository;
             _countryValidator = validator;
         }
-       
 
-        
+
+        [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet]
         public async Task<ActionResult<List<CountryDTO>>> GetAllCountries()
         {
@@ -43,7 +44,7 @@ namespace HumanResourceApplication.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("id")]
         public async Task<ActionResult<CountryDTO>> GetCountryById(string Countryid)
         {
@@ -63,6 +64,8 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddCountry(CountryDTO country)
         {
@@ -84,6 +87,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpPut]
         public async Task<IActionResult> UpdateCountry(string Countryid ,CountryDTO country)
         {
@@ -105,6 +110,7 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteCountryById(string id)
         {

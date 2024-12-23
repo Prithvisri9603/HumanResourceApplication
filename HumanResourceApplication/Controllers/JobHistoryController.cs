@@ -30,6 +30,7 @@ namespace HumanResourceApplication.Controllers
         //Get all job history available of all employees
 
         #region Get All Job History
+        [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet]
         public async Task<IActionResult> GetAllJobHistory()
         {
@@ -47,6 +48,7 @@ namespace HumanResourceApplication.Controllers
 
         #region Total years of experience
         //Gets employees total years of experience 
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("{id}")]
         public async Task<IActionResult> totalyearsofexperience(decimal id)
         {
@@ -80,6 +82,7 @@ namespace HumanResourceApplication.Controllers
 
         #region Employees with less than a year of experience
         //Fetch employees with less than one year of experience
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("lessthanoneyearexperience/{emp_id}")]
         public async Task<IActionResult> ListAllEmployeesWithLessThanOneYearExperience(int emp_id)
         {
@@ -173,7 +176,7 @@ namespace HumanResourceApplication.Controllers
 
         #region Update History
         //Updates employeeId and startDate on JobHistory table
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("{empid}/{startDate}")]
         public async Task<IActionResult> UpdateJobHistory(decimal empid, DateOnly startDate, [FromQuery]DateOnly enddate)
         {
