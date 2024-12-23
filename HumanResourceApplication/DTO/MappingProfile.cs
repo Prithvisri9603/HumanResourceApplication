@@ -13,6 +13,7 @@ namespace HumanResourceApplication.DTO
             CreateMap<JobHistory, JobHistoryDTO>().ReverseMap();
             CreateMap<Country, CountryDTO>().ReverseMap();
             CreateMap<Location, LocationDTO>().ReverseMap();
+
         }
 
 
