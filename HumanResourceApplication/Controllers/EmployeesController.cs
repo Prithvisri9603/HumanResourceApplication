@@ -29,7 +29,7 @@ namespace HumanResourceApplication.Controllers
                 {
                     timeStamp = DateTime.UtcNow,
                     message = "Validation failed",
-
+                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
                 });
             }
             try
@@ -55,7 +55,7 @@ namespace HumanResourceApplication.Controllers
                 {
                     timeStamp = DateTime.UtcNow,
                     message = "Validation failed",
- 
+                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
                 });
             }
 
@@ -100,7 +100,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
+        [Authorize(Roles ="Admin,HR Team,Employee")]
         [HttpPut("Assign Department")]
         public async Task<IActionResult> AssignDep(decimal employeeId, decimal departmentId)
         {
@@ -114,7 +114,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("update Commission for sales department")]
         public async Task<IActionResult> UpdateCommissionForDepartment(decimal departmentId, [FromQuery] decimal commissionPercentage)
         {
@@ -128,6 +128,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find by fisrt name")]
         public async Task<IActionResult> FindByFirstName(string firstName)
         {
@@ -141,8 +142,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("findemail")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("findemail")]
             public async Task<IActionResult> FindByEmail(string email)
             {
                 try
@@ -155,8 +156,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("find phone")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("find phone")]
             public async Task<IActionResult> FindByPhoneNumber(string phone)
             {
                 try
@@ -169,8 +170,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("find All Employee With No Commission")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("find All Employee With No Commission")]
             public async Task<IActionResult> FindAllEmployeeWithNoCommission()
             {
                 try
@@ -183,8 +184,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("find Total Commission Issued To Employee")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("find Total Commission Issued To Employee")]
             public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
             {
                 try
@@ -197,8 +198,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("list All Employees by department")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("list All Employees by department")]
             public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
             {
                 try
@@ -211,8 +212,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("list All Manager Details")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("list All Manager Details")]
             public async Task<IActionResult> ListAllManagerDetails()
             {
                 try
@@ -225,8 +226,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-            [HttpGet("location wise count of employees")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
+        [HttpGet("location wise count of employees")]
             public async Task<IActionResult> CountAllEmployeesGroupByLocation()
             {
                 try
@@ -239,6 +240,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
         {
@@ -252,7 +254,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Update Email")]
         public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
         {
