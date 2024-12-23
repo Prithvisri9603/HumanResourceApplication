@@ -8,10 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-<<<<<<< HEAD
     <PackageReference Include="AutoMapper.Collection" Version="10.0.0" />
-=======
->>>>>>> origin/region
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="JWT" Version="11.0.0" />
@@ -29,7 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTO\" />
+    <Folder Include="Validators\" />
     <Folder Include="Utility\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
