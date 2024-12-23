@@ -2,6 +2,7 @@
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +24,7 @@ namespace HumanResourceApplication.Controllers
             _configuration = configuration;
         }
         #region AddNewRegion
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddRegion")]
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
         {
@@ -41,15 +43,15 @@ namespace HumanResourceApplication.Controllers
                 await _regionRepository.AddNewRegion(region);
                 return Ok("Record created successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
 
         #region UpdateRegion
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateRegion(decimal regionId, RegionDTO regiondto)
         {
@@ -66,16 +68,16 @@ namespace HumanResourceApplication.Controllers
                 await _regionRepository.UpdateRegion(regionId, regiondto);
                 return Ok("Record Modified Successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
 
             }
         }
         #endregion
 
         #region ListAllRegion
-
+        [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet("GetAllRegion")]
 
         public async Task<IActionResult> ListAllRegion()
@@ -85,15 +87,15 @@ namespace HumanResourceApplication.Controllers
                 List<RegionDTO> regionlist = await _regionRepository.ListAllRegion();
                 return Ok(regionlist);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
 
         #region GetRegionById
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("{region_Id}/id")]
         public async Task<IActionResult> GetRegionById(decimal region_Id)
         {
@@ -107,15 +109,15 @@ namespace HumanResourceApplication.Controllers
                 return Ok(regionid);
 
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                return Ok(ex.Message);
+                return Ok(new { Message = "An error occurred." });
             }
         }
         #endregion
 
         #region DeleteById
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpDelete("{region_id}/Delete")]
         public async Task<IActionResult> DeleteById(decimal region_id)
         {
@@ -136,10 +138,10 @@ namespace HumanResourceApplication.Controllers
                 return Ok(new { message = "Region deleted successfully" });
             }
         
-             catch (Exception ex)
+             catch (Exception)
                 {
         
-                return Ok(ex.Message);
+                return Ok(new { Message = "An error occurred." });
               }
              }
            

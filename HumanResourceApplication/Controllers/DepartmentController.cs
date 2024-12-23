@@ -2,6 +2,7 @@
 using FluentValidation;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -24,6 +25,7 @@ namespace HumanResourceApplication.Controllers
             _configuration = configuration;
         }
         #region AddDepartment
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddDepartment")]
         public async Task<IActionResult> AddDepartment(DepartmentDTO department)
         {
@@ -42,14 +44,15 @@ namespace HumanResourceApplication.Controllers
                 await _departmentrepository.AddDepartment(department);
                 return Ok("Record created successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
 
         #region GetDepartment
+        [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet("GetAllDepartment")]
 
         public async Task<IActionResult> GetDepartment()
@@ -59,14 +62,15 @@ namespace HumanResourceApplication.Controllers
                 List<DepartmentDTO> departmentlist = await _departmentrepository.GetDepartment();
                 return Ok(departmentlist);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
 
         #region UpdateDepartment
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
         {
@@ -80,14 +84,15 @@ namespace HumanResourceApplication.Controllers
                 await _departmentrepository.UpdateDepartment(departmentId, departmentdto);
                 return Ok("Record Modified successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
 
         #region GetMaximumSalary
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("findmaxsalary/{department_id}")]
          
         public async Task<IActionResult> GetMaximumSalary(decimal department_id)
@@ -101,9 +106,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                return BadRequest($"{ex.Message}");
+                return BadRequest(new { Message = "An error occurred." });
             }
 
 
@@ -112,6 +117,7 @@ namespace HumanResourceApplication.Controllers
 
         #region GetMinSalary
         //min salary
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("findminsalary/{department_id}")]
 
         public async Task<IActionResult> GetMinSalary(decimal department_id)
@@ -135,6 +141,7 @@ namespace HumanResourceApplication.Controllers
         #endregion GetAllDeptDetailsForEmp
 
         #region GetAllDeptDetailsForEmp
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("{Emp_id}")]
 
         public async Task<IActionResult> GetAllDeptDetailsForEmp(decimal Emp_id)
@@ -152,9 +159,9 @@ namespace HumanResourceApplication.Controllers
 
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { Message = "An error occurred.", Details = ex.Message });
+                return BadRequest(new { Message = "An error occurred."});
             }
         }
 
@@ -162,6 +169,7 @@ namespace HumanResourceApplication.Controllers
         #endregion
 
         #region DeleteDepartmentById
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{department_id}/Delete")]
 
         public async Task<IActionResult> DeleteDepartmentById(decimal department_id)
@@ -171,9 +179,9 @@ namespace HumanResourceApplication.Controllers
                 await _departmentrepository.DeleteDepartmentById(department_id);
                 return Ok("Record deleted succesfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion

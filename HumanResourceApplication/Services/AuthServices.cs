@@ -35,9 +35,19 @@ namespace HumanResourceApplication.Services
 
         public string Authenticate(string username, string password)
         {
-            var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == username && u.Passwordhash == password);
+            //var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == username && u.Passwordhash == password);
 
-            if (user == null) return null;
+
+            var ruser = _context.Users
+   .FromSqlInterpolated($@"
+    SELECT * 
+   FROM Users
+   WHERE Username = {username} 
+   AND Passwordhash= CONVERT(VARCHAR(255), HASHBYTES('SHA2_256', {password}), 2)")
+   .Include(u => u.Role)
+   .FirstOrDefault();
+
+            if (ruser == null) return null;
 
             if (_configuration == null)
             {
@@ -61,8 +71,8 @@ namespace HumanResourceApplication.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
-        new Claim(ClaimTypes.Name, user.Username),
-        new Claim(ClaimTypes.Role, user.Role.Name)
+        new Claim(ClaimTypes.Name, ruser.Username),
+        new Claim(ClaimTypes.Role, ruser.Role.Name)
     }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Audience = audience,

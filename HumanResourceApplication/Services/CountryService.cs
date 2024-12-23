@@ -16,17 +16,33 @@ namespace HumanResourceApplication.Services
         }
 
         #region List All Countries
+
+        /// <summary>
+        /// Retrieves a list of all countries from the database.
+        /// </summary>
+        /// <returns>A list of CountryDTO objects.</returns>
+
         public async Task<List<CountryDTO>> GetAllCountries()
         {
+            
             var countries = await _hrContext.Countries.ToListAsync();
+
             var countryDTOList = _mapper.Map<List<CountryDTO>>(countries);
             return countryDTOList;
+
+            
             await _hrContext.SaveChangesAsync();
         }
         #endregion
 
-
         #region Get Country By Id
+
+        /// <summary>
+        /// Retrieves a specific country by its Id from the database.
+        /// </summary>
+        /// <param name="Countryid">The Id of the country to retrieve.</param>
+        /// <returns>A CountryDTO object if found otherwise null.</returns>
+
         public async Task<CountryDTO?> GetCountryById(string Countryid)
         {
             
@@ -37,11 +53,20 @@ namespace HumanResourceApplication.Services
             }
             var countryDTO = _mapper.Map<CountryDTO>(country);
             return countryDTO;
+
+            
             await _hrContext.SaveChangesAsync();
         }
         #endregion
 
+
         #region Add Country
+
+        /// <summary>
+        /// Adds a new country to the database.
+        /// </summary>
+        /// <param name="country">The CountryDTO object containing the new country data.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task AddCountry( CountryDTO country)
         {
             var countries = _mapper.Map<Country>(country);
@@ -51,9 +76,14 @@ namespace HumanResourceApplication.Services
         }
         #endregion
 
-
-        
         #region Update Country
+        /// <summary>
+        /// Updates an existing country in the database.
+        /// </summary>
+        /// <param name="Countryid">The ID of the country to update.</param>
+        /// <param name="country">The CountryDTO object containing the updated country data.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+
         public async Task UpdateCountry(string Countryid, CountryDTO country)
         {
             var countrydata = await _hrContext.Countries.FindAsync(Countryid);
@@ -61,7 +91,7 @@ namespace HumanResourceApplication.Services
             {
                 
                 _hrContext.Entry(countrydata).State = EntityState.Modified;
-                //return "Record Modified Successfully";
+                
             }
 
             await _hrContext.SaveChangesAsync();
@@ -70,6 +100,12 @@ namespace HumanResourceApplication.Services
         #endregion
 
         #region Delete Country By Id
+
+        /// <summary>
+        /// Deletes a country by its ID from the database.
+        /// </summary>
+        /// <param name="Countryid">The ID of the country to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DeleteCountryById(string Countryid)
         {
             var country = _hrContext.Countries.Find(Countryid);

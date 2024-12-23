@@ -30,6 +30,7 @@ namespace HumanResourceApplication.Controllers
         /// Returns an HTTP 200 OK response with a list of locations retrieved from the repository.
         /// </returns>
 
+        [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet("GetAllLocations")]
         public async Task<IActionResult> GetAllLocations()
         {
@@ -50,6 +51,7 @@ namespace HumanResourceApplication.Controllers
         /// Returns an HTTP 400 Bad Request response if an error occurs during the operation.
         /// </returns>
 
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet]
         public async Task<IActionResult> GetLocationById(decimal id)
         {
@@ -83,7 +85,7 @@ namespace HumanResourceApplication.Controllers
         /// This endpoint is restricted to users with the "Admin" role.
         /// </remarks>
 
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Admin")]
         [HttpPost]
 
         public async Task<IActionResult> AddLocation(LocationDTO locationDto)
@@ -118,6 +120,7 @@ namespace HumanResourceApplication.Controllers
         /// Returns an HTTP 400 Bad Request response if validation fails or an error occurs during the operation.
         /// </returns>
 
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("id")]
         public async Task<IActionResult> UpdateLocation(int id, LocationDTO locationDto)
         {
