@@ -44,6 +44,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+        [Authorize(Roles ="Admin")]
         [HttpPut("Modify")]
         public async Task<IActionResult> ModifyEmployee(int employeeId, EmployeeDTO employee)
         {
