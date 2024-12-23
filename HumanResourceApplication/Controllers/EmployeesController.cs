@@ -44,7 +44,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin")]
         [HttpPut("Modify")]
         public async Task<IActionResult> ModifyEmployee(int employeeId, EmployeeDTO employee)
         {
@@ -100,7 +99,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+
         [HttpPut("Assign Department")]
         public async Task<IActionResult> AssignDep(decimal employeeId, decimal departmentId)
         {
@@ -114,7 +113,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+
         [HttpPut("update Commission for sales department")]
         public async Task<IActionResult> UpdateCommissionForDepartment(decimal departmentId, [FromQuery] decimal commissionPercentage)
         {
@@ -128,7 +127,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find by fisrt name")]
         public async Task<IActionResult> FindByFirstName(string firstName)
         {
@@ -142,105 +140,104 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("findemail")]
-        public async Task<IActionResult> FindByEmail(string email)
-        {
-            try
+
+            [HttpGet("findemail")]
+            public async Task<IActionResult> FindByEmail(string email)
             {
-                var employee = await _employeeRepo.FindByEmail(email);
-                return Ok(employee);
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
-            }
-        }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("find phone")]
-        public async Task<IActionResult> FindByPhoneNumber(string phone)
-        {
-            try
-            {
-                var employee = await _employeeRepo.FindByPhoneNumber(phone);
-                return Ok(employee);
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+                try
+                {
+                    var employee = await _employeeRepo.FindByEmail(email);
+                    return Ok(employee);
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("find All Employee With No Commission")]
-        public async Task<IActionResult> FindAllEmployeeWithNoCommission()
-        {
-            try
+
+            [HttpGet("find phone")]
+            public async Task<IActionResult> FindByPhoneNumber(string phone)
             {
-                var employees = await _employeeRepo.FindAllEmployeeWithNoCommission();
-                return Ok(employees);
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
-            }
-        }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("find Total Commission Issued To Employee")]
-        public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
-        {
-            try
-            {
-                var totalCommission = await _employeeRepo.FindTotalCommissionIssuedToDepartment(departmentId);
-                return Ok(new { departmentId, sum = totalCommission });
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+                try
+                {
+                    var employee = await _employeeRepo.FindByPhoneNumber(phone);
+                    return Ok(employee);
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("list All Employees by department")]
-        public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
-        {
-            try
+
+            [HttpGet("find All Employee With No Commission")]
+            public async Task<IActionResult> FindAllEmployeeWithNoCommission()
             {
-                var employees = await _employeeRepo.ListAllEmployeesByDepartment(departmentId);
-                return Ok(employees);
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
-            }
-        }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("list All Manager Details")]
-        public async Task<IActionResult> ListAllManagerDetails()
-        {
-            try
-            {
-                var managers = await _employeeRepo.ListAllManagerDetails();
-                return Ok(managers);
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+                try
+                {
+                    var employees = await _employeeRepo.FindAllEmployeeWithNoCommission();
+                    return Ok(employees);
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("location wise count of employees")]
-        public async Task<IActionResult> CountAllEmployeesGroupByLocation()
-        {
-            try
+
+            [HttpGet("find Total Commission Issued To Employee")]
+            public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
             {
-                var result = await _employeeRepo.CountAllEmployeesGroupByLocation();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+                try
+                {
+                    var totalCommission = await _employeeRepo.FindTotalCommissionIssuedToDepartment(departmentId);
+                    return Ok(new { departmentId, sum = totalCommission });
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team,Employee")]
+
+            [HttpGet("list All Employees by department")]
+            public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
+            {
+                try
+                {
+                    var employees = await _employeeRepo.ListAllEmployeesByDepartment(departmentId);
+                    return Ok(employees);
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+            }
+        }
+
+            [HttpGet("list All Manager Details")]
+            public async Task<IActionResult> ListAllManagerDetails()
+            {
+                try
+                {
+                    var managers = await _employeeRepo.ListAllManagerDetails();
+                    return Ok(managers);
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+            }
+        }
+
+            [HttpGet("location wise count of employees")]
+            public async Task<IActionResult> CountAllEmployeesGroupByLocation()
+            {
+                try
+                {
+                    var result = await _employeeRepo.CountAllEmployeesGroupByLocation();
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+            }
+        }
         [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
         {
@@ -254,7 +251,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+
         [HttpPut("Update Email")]
         public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
         {

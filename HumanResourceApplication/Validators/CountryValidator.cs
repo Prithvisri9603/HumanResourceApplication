@@ -12,7 +12,7 @@ namespace HumanResourceApplication.Validators
             RuleFor(x => x.CountryId).NotEmpty().WithMessage("Country ID is required.").Length(2).WithMessage("Country ID must be exactly two characters.")
             .Matches("^[A-Z]{2}$").WithMessage("Country ID must consist of exactly two uppercase letters.");
 
-            // CountryName Validation: Must start with an uppercase letter and not be empty
+            // CountryName Validation
             RuleFor(x => x.CountryName).NotEmpty().WithMessage("Country Name is required.")
             .Must(countryName => char.IsUpper(countryName[0])).WithMessage("Country Name must start with an uppercase letter.");
 
