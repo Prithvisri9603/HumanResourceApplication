@@ -1,6 +1,7 @@
 ﻿using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
 using HumanResourceApplication.Validators;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -77,6 +78,7 @@ namespace HumanResourceApplication.Controllers
         }
         #endregion
 
+        #region Employees with less than a year of experience
         //Fetch employees with less than one year of experience
         [HttpGet("lessthanoneyearexperience/{emp_id}")]
         public async Task<IActionResult> ListAllEmployeesWithLessThanOneYearExperience(int emp_id)
@@ -116,10 +118,12 @@ namespace HumanResourceApplication.Controllers
                 });
             }
         }
+        #endregion
 
-       
+
+        #region Add JobHistory
         // Adds new startdate to existing employee
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("{empid}/{startDate}/{jobId}/{deptId}")]
         public async Task<IActionResult> AddJobHistory(decimal empid, DateOnly startDate, string jobId, decimal deptId)
         {
@@ -165,9 +169,11 @@ namespace HumanResourceApplication.Controllers
         //    }
 
         //}
+        #endregion
 
-
+        #region Update History
         //Updates employeeId and startDate on JobHistory table
+        [Authorize(Roles = "Admin")]
         [HttpPut("{empid}/{startDate}")]
         public async Task<IActionResult> UpdateJobHistory(decimal empid, DateOnly startDate, [FromQuery]DateOnly enddate)
         {
@@ -181,6 +187,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        #endregion
     }
 }
