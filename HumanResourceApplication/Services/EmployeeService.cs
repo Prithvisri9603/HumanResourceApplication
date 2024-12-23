@@ -17,6 +17,11 @@ namespace HumanResourceApplication.Services
         }
         public async Task AddEmployee(EmployeeDTO employee)
         {
+            bool emailExists = await _context.Employees.AnyAsync(e => e.Email == employee.Email);
+            if (emailExists)
+            {
+                throw new Exception("email address already exists");
+            }
             var employees = _mapper.Map<Employee>(employee);
             _context.Employees.Add(employees);
             await _context.SaveChangesAsync();
@@ -24,15 +29,21 @@ namespace HumanResourceApplication.Services
         }
         public async Task ModifyEmployee(int employeeId, EmployeeDTO employee)
         {
+            
             var employeedata = await _context.Employees.FindAsync(employeeId);
             if (employeedata != null)
             {
+                bool emailExists = await _context.Employees.AnyAsync(e => e.Email == employee.Email);
+                if (emailExists)
+                {
+                    throw new Exception("email address already exists");
+                }
                 _mapper.Map(employee, employeedata);
                 _context.Entry(employeedata).State = EntityState.Modified;
-                //return "Record Modified Successfully";
+    
             }
             await _context.SaveChangesAsync();
-            // return "Employee id not found";
+           
         }
         public async Task AssignJob(string currentJobId, string newJobId)
         {
@@ -204,12 +215,8 @@ namespace HumanResourceApplication.Services
             {
                 throw new Exception($"Job not found for the employee ID {employeeId}.");
             }
-
-            var maxSalary = await _context.Employees
-                .Where(e => e.JobId == jobId)
-                .MaxAsync(e => e.Salary ?? 0);
-
-            return (job.JobTitle, maxSalary);
+            //var maxsalary = await _context.Employees.Where(x => x.JobId == jobId).MaxAsync(x => x.Salary??0);
+            return (job.JobTitle, job.MaxSalary??0);
         }
 
         public async Task UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)

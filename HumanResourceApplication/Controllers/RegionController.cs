@@ -2,6 +2,7 @@
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +24,7 @@ namespace HumanResourceApplication.Controllers
             _configuration = configuration;
         }
         #region AddNewRegion
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddRegion")]
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
         {
@@ -49,7 +51,7 @@ namespace HumanResourceApplication.Controllers
         #endregion
 
         #region UpdateRegion
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateRegion(decimal regionId, RegionDTO regiondto)
         {
@@ -75,7 +77,7 @@ namespace HumanResourceApplication.Controllers
         #endregion
 
         #region ListAllRegion
-
+        [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet("GetAllRegion")]
 
         public async Task<IActionResult> ListAllRegion()
@@ -93,7 +95,7 @@ namespace HumanResourceApplication.Controllers
         #endregion
 
         #region GetRegionById
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("{region_Id}/id")]
         public async Task<IActionResult> GetRegionById(decimal region_Id)
         {
@@ -115,7 +117,7 @@ namespace HumanResourceApplication.Controllers
         #endregion
 
         #region DeleteById
-
+        [Authorize(Roles = "Admin, HR Team")]
         [HttpDelete("{region_id}/Delete")]
         public async Task<IActionResult> DeleteById(decimal region_id)
         {

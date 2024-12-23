@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +36,8 @@ builder.Services.AddScoped<ICountryRepository, CountryService>();
 builder.Services.AddScoped<IJobRepository, JobServices>();
 builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
 builder.Services.AddScoped<ILocationRepository, LocationServices>();
-
+builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
+builder.Services.AddScoped<IRegionRepository, RegionServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 // Configure FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
@@ -42,6 +45,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<DepartmentDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<RegionDTOValidator>();
 
 
 // Adding Authentication
@@ -116,6 +121,21 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseExceptionHandler(options =>
+{
+    options.Run(async context =>
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        context.Response.ContentType = "application/json";
+        var exception = context.Features.Get<IExceptionHandlerFeature>();
+        if (exception != null)
+        {
+            var message = $"Global Exception :{exception.Error.Message} ";
+            await context.Response.WriteAsync(message).ConfigureAwait(false);
+        }
+    });
+});
 
 app.MapControllers();
 
