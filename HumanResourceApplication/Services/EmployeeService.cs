@@ -204,12 +204,8 @@ namespace HumanResourceApplication.Services
             {
                 throw new Exception($"Job not found for the employee ID {employeeId}.");
             }
-
-            var maxSalary = await _context.Employees
-                .Where(e => e.JobId == jobId)
-                .MaxAsync(e => e.Salary ?? 0);
-
-            return (job.JobTitle, maxSalary);
+            //var maxsalary = await _context.Employees.Where(x => x.JobId == jobId).MaxAsync(x => x.Salary??0);
+            return (job.JobTitle, job.MaxSalary??0);
         }
 
         public async Task UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
