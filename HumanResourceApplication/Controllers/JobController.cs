@@ -25,6 +25,7 @@ namespace HumanResourceApplication.Controllers
 
         }
 
+        #region Get Job methods
         [HttpGet]
         public async Task<IActionResult> GetJobs()
         {
@@ -58,7 +59,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region Add job
         //Add Job 
 
         //public async Task<IActionResult> AddJob(JobDTO jobDTO)
@@ -104,7 +107,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region Update Job methods
         //UPDATE
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateJob(string id, JobDTO jobDTO)
@@ -164,6 +169,7 @@ namespace HumanResourceApplication.Controllers
             }
 
         }
+        #endregion
 
     }
 }
