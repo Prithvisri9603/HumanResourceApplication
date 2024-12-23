@@ -18,7 +18,7 @@ namespace HumanResourceApplication.Services
             _context = context;
             _configuration = configuration;
         }
-        /*
+        
         #region Authenticate
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace HumanResourceApplication.Services
             return tokenHandler.WriteToken(token);
         }
         #endregion
-        */
+        
     }
 
 }

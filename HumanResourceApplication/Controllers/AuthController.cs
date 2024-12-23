@@ -15,7 +15,7 @@ namespace HumanResourceApplication.Controllers
         {
             _authservice = authRepository;
         }
-        /*
+        
         #region Login
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace HumanResourceApplication.Controllers
             return Ok(token);
         }
         #endregion
-        */
+        
     }
 }
 

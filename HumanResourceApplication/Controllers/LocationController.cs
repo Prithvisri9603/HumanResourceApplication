@@ -83,7 +83,7 @@ namespace HumanResourceApplication.Controllers
         /// This endpoint is restricted to users with the "Admin" role.
         /// </remarks>
 
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Admin")]
         [HttpPost]
 
         public async Task<IActionResult> AddLocation(LocationDTO locationDto)
