@@ -44,9 +44,9 @@ namespace HumanResourceApplication.Controllers
                 await _departmentrepository.AddDepartment(department);
                 return Ok("Record created successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
@@ -62,9 +62,9 @@ namespace HumanResourceApplication.Controllers
                 List<DepartmentDTO> departmentlist = await _departmentrepository.GetDepartment();
                 return Ok(departmentlist);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
@@ -84,9 +84,9 @@ namespace HumanResourceApplication.Controllers
                 await _departmentrepository.UpdateDepartment(departmentId, departmentdto);
                 return Ok("Record Modified successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
@@ -106,9 +106,9 @@ namespace HumanResourceApplication.Controllers
                 }
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                return BadRequest($"{ex.Message}");
+                return BadRequest(new { Message = "An error occurred." });
             }
 
 
@@ -159,9 +159,9 @@ namespace HumanResourceApplication.Controllers
 
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(new { Message = "An error occurred.", Details = ex.Message });
+                return BadRequest(new { Message = "An error occurred."});
             }
         }
 
@@ -179,9 +179,9 @@ namespace HumanResourceApplication.Controllers
                 await _departmentrepository.DeleteDepartmentById(department_id);
                 return Ok("Record deleted succesfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
