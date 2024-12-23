@@ -34,6 +34,7 @@ builder.Services.AddScoped<ICountryRepository, CountryService>();
 builder.Services.AddScoped<IJobRepository, JobServices>();
 builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
 builder.Services.AddScoped<ILocationRepository, LocationServices>();
+
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 // Configure FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
@@ -41,6 +42,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
+
 
 // Adding Authentication
 

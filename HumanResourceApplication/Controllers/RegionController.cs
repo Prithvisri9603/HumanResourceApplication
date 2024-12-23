@@ -41,9 +41,9 @@ namespace HumanResourceApplication.Controllers
                 await _regionRepository.AddNewRegion(region);
                 return Ok("Record created successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
@@ -66,9 +66,9 @@ namespace HumanResourceApplication.Controllers
                 await _regionRepository.UpdateRegion(regionId, regiondto);
                 return Ok("Record Modified Successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
 
             }
         }
@@ -85,9 +85,9 @@ namespace HumanResourceApplication.Controllers
                 List<RegionDTO> regionlist = await _regionRepository.ListAllRegion();
                 return Ok(regionlist);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
         #endregion
@@ -107,9 +107,9 @@ namespace HumanResourceApplication.Controllers
                 return Ok(regionid);
 
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                return Ok(ex.Message);
+                return Ok(new { Message = "An error occurred." });
             }
         }
         #endregion
@@ -136,10 +136,10 @@ namespace HumanResourceApplication.Controllers
                 return Ok(new { message = "Region deleted successfully" });
             }
         
-             catch (Exception ex)
+             catch (Exception)
                 {
         
-                return Ok(ex.Message);
+                return Ok(new { Message = "An error occurred." });
               }
              }
            
