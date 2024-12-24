@@ -5,7 +5,6 @@ using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 namespace HumanResourceApplication.Controllers
 {
     [Route("api/[controller]")]
@@ -19,10 +18,8 @@ namespace HumanResourceApplication.Controllers
             _employeeRepo = employeeRepo;
             _employeeValidator = employeevalidator;
         }
-
-        [Authorize(Roles = "Admin")]
-
-        [HttpPost("Add new Employee ")]
+       [Authorize(Roles ="Admin")]
+        [HttpPost("Add new Employee")]
         public async Task<IActionResult> AddEmployee(EmployeeDTO employee)
         {
             var validationResult = await _employeeValidator.ValidateAsync(employee);
@@ -35,7 +32,6 @@ namespace HumanResourceApplication.Controllers
                     errors = validationResult.Errors.Select(e => e.ErrorMessage)
                 });
             }
-
             try
             {
                 await _employeeRepo.AddEmployee(employee);
@@ -43,10 +39,12 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                if(ex.Message.Contains("email address already exists"))
+                    return BadRequest(new {timestamp=DateOnly.FromDateTime(DateTime.Now), message = ex.Message});
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles ="Admin")]
         [HttpPut("Modify")]
         public async Task<IActionResult> ModifyEmployee(int employeeId, EmployeeDTO employee)
         {
@@ -68,7 +66,9 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { timeStamp = DateTime.UtcNow, message = ex.Message });
+                if (ex.Message.Contains("email address already exists"))
+                    return BadRequest(new {timestamp= DateOnly.FromDateTime(DateTime.Now),message = ex.Message});
+                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
         [Authorize(Roles = "Admin,HR Team")]
@@ -100,8 +100,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles ="Admin,HR Team,Employee")]
         [HttpPut("Assign Department")]
         public async Task<IActionResult> AssignDep(decimal employeeId, decimal departmentId)
         {
@@ -115,7 +114,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("update Commission for sales department")]
         public async Task<IActionResult> UpdateCommissionForDepartment(decimal departmentId, [FromQuery] decimal commissionPercentage)
@@ -130,7 +128,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find by fisrt name")]
         public async Task<IActionResult> FindByFirstName(string firstName)
@@ -145,7 +142,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("findemail")]
             public async Task<IActionResult> FindByEmail(string email)
@@ -160,7 +156,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find phone")]
             public async Task<IActionResult> FindByPhoneNumber(string phone)
@@ -175,8 +170,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find All Employee With No Commission")]
             public async Task<IActionResult> FindAllEmployeeWithNoCommission()
             {
@@ -190,7 +184,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find Total Commission Issued To Employee")]
             public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
             {
@@ -204,7 +198,6 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("list All Employees by department")]
             public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
@@ -219,7 +212,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("list All Manager Details")]
             public async Task<IActionResult> ListAllManagerDetails()
             {
@@ -233,7 +226,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("location wise count of employees")]
             public async Task<IActionResult> CountAllEmployeesGroupByLocation()
             {
@@ -247,7 +240,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        [Authorize(Roles = "Admin,HR Team")]
+        [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
         {
@@ -261,21 +254,20 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Update Email")]
-            public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
+        public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
+        {
+            try
             {
-                try
-                {
-                    await _employeeRepo.UpdateEmployeeEmail(email, employeeDto);
-                    return Ok("Record Modified Successfully");
-                }
-                catch (Exception ex)
-                {
-                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
-                }
+                await _employeeRepo.UpdateEmployeeEmail(email, employeeDto);
+                return Ok("Record Modified Successfully");
+            }
+            catch (Exception ex)
+            {
+            return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
     }
+}
 
