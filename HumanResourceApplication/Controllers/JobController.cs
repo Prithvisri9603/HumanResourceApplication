@@ -25,6 +25,8 @@ namespace HumanResourceApplication.Controllers
             _validator = validator;
 
         }
+
+        #region Get methods
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet]
         public async Task<IActionResult> GetJobs()
@@ -39,6 +41,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest("Bad request bro");
             }
         }
+        
         [Authorize(Roles = "Admin,HR Team")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetJobById(string id)
@@ -59,7 +62,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region Add job
         //Add Job 
 
         //public async Task<IActionResult> AddJob(JobDTO jobDTO)
@@ -106,7 +111,9 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
+        #region Update Job methods
         //UPDATE
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("{id}")]
@@ -167,6 +174,7 @@ namespace HumanResourceApplication.Controllers
             }
 
         }
+        #endregion
 
     }
 }
