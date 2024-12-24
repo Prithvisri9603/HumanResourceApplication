@@ -3,9 +3,10 @@ using HumanResourceApplication.DTO;
 
 namespace HumanResourceApplication.Validators
 {
+
     public class JobsDTOValidator : AbstractValidator<JobDTO>
     {
-        public JobsDTOValidator() 
+        public JobsDTOValidator()
         {
             RuleFor(x => x.JobTitle)
                 .NotEmpty().WithMessage("Job Title is required")
