@@ -233,13 +233,17 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+<<<<<<< Updated upstream
+=======
+       // [Authorize(Roles = "Admin,HR Team,Employee")]
+>>>>>>> Stashed changes
         [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
         {
             try
             {
                 var result = await _employeeRepo.FindMaxSalaryOfJobByEmployeeId(empid);
-                return Ok(new { JobTitle = result.JobDescription, MaxSalary = result.MaxSalary });
+                return Ok(result);
             }
             catch (Exception ex)
             {

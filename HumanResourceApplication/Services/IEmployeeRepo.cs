@@ -1,4 +1,5 @@
 ﻿using HumanResourceApplication.DTO;
+using HumanResourceApplication.Models;
 
 namespace HumanResourceApplication.Services
 {
@@ -18,7 +19,7 @@ namespace HumanResourceApplication.Services
         Task<List<EmployeeDTO>> ListAllEmployeesByDepartment(decimal departmentId);
         Task<List<EmployeeDTO>> ListAllManagerDetails();
         Task<Dictionary<decimal, int>> CountAllEmployeesGroupByLocation();
-        Task<(string JobDescription, decimal MaxSalary)> FindMaxSalaryOfJobByEmployeeId(decimal employeeId);
+        Task<List<SpDTO>> FindMaxSalaryOfJobByEmployeeId(decimal employeeId);
         Task UpdateEmployeeEmail(string email, EmployeeDTO employee);
     }
 }

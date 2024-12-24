@@ -242,6 +242,32 @@ public partial class HrContext : DbContext
                 .HasColumnName("region_name");
         });
 
+<<<<<<< Updated upstream
+=======
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC273EC71743");
+
+            entity.ToTable("Role");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC0764966BEB");
+
+            entity.Property(e => e.Passwordhash).HasMaxLength(255);
+            entity.Property(e => e.Username).HasMaxLength(100);
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_User_Role");
+        });
+
+>>>>>>> Stashed changes
         OnModelCreatingPartial(modelBuilder);
     }
 

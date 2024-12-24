@@ -1,7 +1,11 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Numerics;
 using AutoMapper;
+using HumanResourceApplication.Controllers;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace HumanResourceApplication.Services
@@ -10,6 +14,7 @@ namespace HumanResourceApplication.Services
     {
         private readonly HrContext _context;
         private readonly IMapper _mapper;
+       
         public EmployeeService(HrContext context, IMapper mapper)
         {
             _context = context;
@@ -190,8 +195,9 @@ namespace HumanResourceApplication.Services
             return result;
         }
 
-        public async Task<(string JobDescription, decimal MaxSalary)> FindMaxSalaryOfJobByEmployeeId(decimal employeeId)
+        public async Task<List<SpDTO>> FindMaxSalaryOfJobByEmployeeId(decimal employeeId)
         {
+<<<<<<< Updated upstream
             var employee = await _context.Employees.FindAsync(employeeId);
             if (employee == null)
             {
@@ -210,6 +216,11 @@ namespace HumanResourceApplication.Services
                 .MaxAsync(e => e.Salary ?? 0);
 
             return (job.JobTitle, maxSalary);
+=======
+            var result = _context.Jobs.FromSqlInterpolated($"EXEC MaxSalarybyJobId @employeeId={employeeId}").ToListAsync();
+            return _mapper.Map<List<SpDTO>>(result);
+           
+>>>>>>> Stashed changes
         }
 
         public async Task UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
