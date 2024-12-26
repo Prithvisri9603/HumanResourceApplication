@@ -1,4 +1,5 @@
 ﻿using HumanResourceApplication.DTO;
+using HumanResourceApplication.Models;
 
 namespace HumanResourceApplication.Services
 {

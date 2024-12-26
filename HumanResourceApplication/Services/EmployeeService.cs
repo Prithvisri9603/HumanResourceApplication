@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Numerics;
 using AutoMapper;
+using HumanResourceApplication.Controllers;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using Microsoft.Data.SqlClient;
@@ -12,6 +13,7 @@ namespace HumanResourceApplication.Services
     {
         private readonly HrContext _context;
         private readonly IMapper _mapper;
+       
         public EmployeeService(HrContext context, IMapper mapper)
         {
             _context = context;
