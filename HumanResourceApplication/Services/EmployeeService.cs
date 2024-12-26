@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Data;
+using System.Numerics;
 using AutoMapper;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
@@ -203,20 +204,23 @@ namespace HumanResourceApplication.Services
 
         public async Task<(string JobDescription, decimal MaxSalary)> FindMaxSalaryOfJobByEmployeeId(decimal employeeId)
         {
-            var employee = await _context.Employees.FindAsync(employeeId);
-            if (employee == null)
-            {
-                throw new Exception($"Employee with ID {employeeId} not found.");
-            }
+            var sql = $"EXEC MaxSalarybyJobId @employeeId = {employeeId}";
+            var results = await _context.Database.ExecuteSqlRawAsync(sql);
+            using var connection = _context.Database.GetDbConnection();
+            await connection.OpenAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
 
-            var jobId = employee.JobId;
-            var job = await _context.Jobs.FirstOrDefaultAsync(j => j.JobId == jobId);
-            if (job == null)
+            using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
             {
-                throw new Exception($"Job not found for the employee ID {employeeId}.");
+                var jobTitle = reader["job_title"] as string ?? string.Empty;
+                var maxSalary = reader["max_salary"] != DBNull.Value ? Convert.ToDecimal(reader["max_salary"]) : 0;
+
+                return (jobTitle, maxSalary);
             }
-            //var maxsalary = await _context.Employees.Where(x => x.JobId == jobId).MaxAsync(x => x.Salary??0);
-            return (job.JobTitle, job.MaxSalary??0);
+            throw new Exception($"No job found for employee ID {employeeId}");
         }
 
         public async Task UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)

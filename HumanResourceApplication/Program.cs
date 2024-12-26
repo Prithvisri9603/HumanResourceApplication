@@ -75,11 +75,18 @@ builder.Services.AddScoped<ILocationRepository, LocationServices>();
 builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
 builder.Services.AddScoped<IRegionRepository, RegionServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
+<<<<<<< HEAD
 // Configure FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
+=======
+builder.Services.AddScoped<ICountryRepository, CountryService>();
+builder.Services.AddScoped<IRegionRepository, RegionServices>();
+
+//configure the fluentvalidation
+>>>>>>> eccaf2208fe78b3a46ff3f79111348ced89b64dc
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<DepartmentDTOValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegionDTOValidator>();

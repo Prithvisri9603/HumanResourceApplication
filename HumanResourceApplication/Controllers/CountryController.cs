@@ -1,9 +1,13 @@
 ﻿using FluentValidation;
 using HumanResourceApplication.DTO;
+using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HumanResourceApplication.Utility;
+using System.ComponentModel.DataAnnotations;
 
 namespace HumanResourceApplication.Controllers
 {
@@ -90,24 +94,72 @@ namespace HumanResourceApplication.Controllers
         /// <returns>A success message or a BadRequest response if validation fails.</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost("Add new country")]
-        
+
         public async Task<IActionResult> AddCountry(CountryDTO country)
         {
-            try
+            /*try
             {
-                var validationResult =await _countryValidator.ValidateAsync(country);
+                var validationResult = await _countryValidator.ValidateAsync(country);
                 if (!validationResult.IsValid)
                 {
                     return BadRequest(validationResult.Errors);
                 }
-                await _countryRepository.AddCountry( country);
+                await _countryRepository.AddCountry(country);
                 return Ok("Record added successfully");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }*/
+
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                // Check if the country already exists
+                var existingCountry = await _countryRepository.GetCountryById(country.CountryId);
+                if (existingCountry != null)
+                {
+                    throw new AlreadyExistsException($"Country '{country.CountryId}' already exists.");
+                }
+
+                // Validate the country data
+                var validationResult = _countryValidator.Validate(country);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    throw new CustomeValidationException(errors, timeStamp);
+                }
+
+                // Add the new country to the repository
+                await _countryRepository.AddCountry(country);
+
+                // Return success response with timestamp
+                return Ok(new
+                {
+                    //TimeStamp = timeStamp,
+                    Message = "Country record created successfully"
+                });
             }
+
+            catch (Exception ex)
+            {
+                // Return BadRequest error response for any other exception
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
+            }
+
+
         }
+
+
+
+
+
+        
         #endregion
 
         #region Update Country
@@ -123,7 +175,7 @@ namespace HumanResourceApplication.Controllers
         
         public async Task<IActionResult> UpdateCountry(string Countryid ,CountryDTO country)
         {
-            try
+            /*try
             {
                 var validationResult = await _countryValidator.ValidateAsync(country);
                 if (!validationResult.IsValid)
@@ -138,7 +190,54 @@ namespace HumanResourceApplication.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }*/
+
+            try
+            {
+                // Capture the current timestamp in UTC ISO 8601 format
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                // Validate the country DTO using the validator
+                var validationResult = await _countryValidator.ValidateAsync(country);
+                if (!validationResult.IsValid)
+                {
+                    // Throw a custom validation exception if validation fails
+                    throw new CustomeValidationException(validationResult.Errors.Select(e => e.ErrorMessage).ToList(), timeStamp);
+                }
+
+                // Check if the country exists by its ID
+                var existingCountry = await _countryRepository.GetCountryById(Countryid);
+                if (existingCountry == null)
+                {
+                    // Throw an exception if the country is not found
+                    throw new AlreadyExistsException("Country not found.");
+                }
+
+                // Proceed to update the country if it exists
+                await _countryRepository.UpdateCountry(Countryid, country);
+
+                // Return a successful response with the timestamp
+                return Ok(new
+                {
+                    //TimeStamp = timeStamp,
+                    Message = "Country record updated successfully"
+                });
             }
+            catch (Exception ex)
+            {
+                // Handle general exceptions, return a bad request with the exception message and timestamp
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = "An unexpected error occurred",
+                    Details = ex.Message
+                });
+            }
+
+
+
+
+
         }
         #endregion
 
