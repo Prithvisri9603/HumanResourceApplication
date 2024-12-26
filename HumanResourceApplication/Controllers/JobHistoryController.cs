@@ -1,5 +1,6 @@
 ﻿using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Utility;
 using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -128,6 +129,7 @@ namespace HumanResourceApplication.Controllers
         // Adds new startdate to existing employee
         [Authorize(Roles = "Admin")]
         [HttpPost("{empid}/{startDate}/{jobId}/{deptId}")]
+        /*
         public async Task<IActionResult> AddJobHistory(decimal empid, DateOnly startDate, string jobId, decimal deptId)
         {
             // Create a JobHistoryRequest instance
@@ -157,7 +159,58 @@ namespace HumanResourceApplication.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }*/
+
+        public async Task<IActionResult> AddJobHistory(decimal empid, DateOnly startDate, string jobId, decimal deptId)
+        {
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                // Create a JobHistoryRequest instance
+                var request = new JobHistoryDTO
+                {
+                    EmployeeId = empid,
+                    StartDate = startDate,
+                    JobId = jobId,
+                    DepartmentId = deptId
+                };
+
+                // Check if the job history already exists
+                var existingJobHistory = await _repository.GetJobHistoryByEmployeeIdAndJob(empid, jobId);
+                if (existingJobHistory != null)
+                {
+                    throw new AlreadyExistsException($"Job history for employee {empid} and job {jobId} already exists.");
+                }
+
+                // Validate the JobHistoryDTO using FluentValidation
+                var validationResult = await _validator.ValidateAsync(request);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    throw new CustomeValidationException(errors, timeStamp);
+                }
+
+                // Add JobHistory to the repository
+                await _repository.AddJobHistory(empid, startDate, jobId, deptId);
+
+                // Return successful response
+                return Ok(new
+                {
+                    Message = "Record Created Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                // Return error response with timestamp
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
+            }
         }
+
 
         //public async Task<IActionResult> AddJobHistory(decimal empid,DateOnly startDate,string jobId,decimal deptId)
         //{
@@ -178,6 +231,7 @@ namespace HumanResourceApplication.Controllers
         //Updates employeeId and startDate on JobHistory table
         [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("{empid}/{startDate}")]
+        /*
         public async Task<IActionResult> UpdateJobHistory(decimal empid, DateOnly startDate, [FromQuery]DateOnly enddate)
         {
             try
@@ -189,7 +243,55 @@ namespace HumanResourceApplication.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }*/
+
+        public async Task<IActionResult> UpdateJobHistory(decimal empid, DateOnly startDate, [FromQuery] DateOnly endDate)
+        {
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                // Create the JobHistoryDTO for validation
+                var request = new JobHistoryDTO
+                {
+                    EmployeeId = empid,
+                    StartDate = startDate,
+                    EndDate = endDate
+                };
+
+                // Validate the JobHistoryDTO using FluentValidation
+                var validationResult = await _validator.ValidateAsync(request);
+                if (!validationResult.IsValid)
+                {
+                    throw new CustomeValidationException(validationResult.Errors.Select(e => e.ErrorMessage).ToList(), timeStamp);
+                }
+
+                // Check if the JobHistory exists
+                var existingJobHistory = await _repository.GetJobHistoryByEmployeeIdAndJob(request.EmployeeId, request.JobId);  // Assuming you have the jobId in your DTO or pass it
+                if (existingJobHistory == null)
+                {
+                    throw new AlreadyExistsException("Job history not found.");
+                }
+
+                // Update the JobHistory in the repository
+                await _repository.UpdateJobHistory(empid, startDate, endDate);
+
+                return Ok(new
+                {
+                    Message = "Record Modified Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                // Return error response with timestamp
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
+            }
         }
+
         #endregion
     }
 }

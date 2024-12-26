@@ -23,6 +23,26 @@ namespace HumanResourceApplication.Services
             return joblist;
         }
 
+        public async Task<JobHistoryDTO> GetJobHistoryByEmployeeIdAndJob(decimal empid, string jobId)
+        {
+            // Assuming JobHistory is a DbSet in your DbContext
+            var jobHistory = await _context.JobHistories
+                                           .FirstOrDefaultAsync(jh => jh.EmployeeId == empid && jh.JobId == jobId);
+
+            if (jobHistory == null)
+            {
+                return null;
+            }
+
+            // Map the JobHistory model to JobHistoryDTO (using AutoMapper or manual mapping)
+            return new JobHistoryDTO
+            {
+                EmployeeId = jobHistory.EmployeeId,
+                StartDate = jobHistory.StartDate,
+                JobId = jobHistory.JobId,
+                DepartmentId = jobHistory.DepartmentId
+            };
+        }
 
         public async Task<TimeSpan?> FindExperienceOfEmployees(decimal id)
         {

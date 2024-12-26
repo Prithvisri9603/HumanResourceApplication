@@ -66,15 +66,27 @@ IMapper mapper = mapperConfig.CreateMapper();
 //register the mapper instance to the service container
 builder.Services.AddSingleton(mapper);
 
-//Register the repository
-builder.Services.AddScoped<ILocationRepository, LocationServices>();
-builder.Services.AddScoped<IAuthServices, AuthServices>();
+// Register repositories
+builder.Services.AddScoped<IEmployeeRepo, EmployeeService>();
 builder.Services.AddScoped<ICountryRepository, CountryService>();
+builder.Services.AddScoped<IJobRepository, JobServices>();
+builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
+builder.Services.AddScoped<ILocationRepository, LocationServices>();
 builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
 builder.Services.AddScoped<IRegionRepository, RegionServices>();
+builder.Services.AddScoped<IAuthServices, AuthServices>();
 
-//configure the fluentvalidation
+//builder.Services.AddScoped<ICountryRepository, CountryService>();
+//builder.Services.AddScoped<IRegionRepository, RegionServices>();
+
+// Configure FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<DepartmentDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<RegionDTOValidator>();
 
 
 builder.Services.AddEndpointsApiExplorer();
