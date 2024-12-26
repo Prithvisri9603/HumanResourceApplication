@@ -239,7 +239,7 @@ namespace HumanResourceApplication.Controllers
             try
             {
                 var result = await _employeeRepo.FindMaxSalaryOfJobByEmployeeId(empid);
-                return Ok(new { JobTitle = result.JobDescription, MaxSalary = result.MaxSalary });
+                return Ok(new { JobTitle = result.JobTitle, MaxSalary = result.MaxSalary });
             }
             catch (Exception ex)
             {

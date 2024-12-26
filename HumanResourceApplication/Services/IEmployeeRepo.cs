@@ -18,7 +18,7 @@ namespace HumanResourceApplication.Services
         Task<List<EmployeeDTO>> ListAllEmployeesByDepartment(decimal departmentId);
         Task<List<EmployeeDTO>> ListAllManagerDetails();
         Task<Dictionary<decimal, int>> CountAllEmployeesGroupByLocation();
-        Task<(string JobDescription, decimal MaxSalary)> FindMaxSalaryOfJobByEmployeeId(decimal employeeId);
+        Task<(string JobTitle, decimal MaxSalary)> FindMaxSalaryOfJobByEmployeeId(decimal employeeId);
         Task UpdateEmployeeEmail(string email, EmployeeDTO employee);
     }
 }
