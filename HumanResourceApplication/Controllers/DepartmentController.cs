@@ -2,6 +2,7 @@
 using FluentValidation;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace HumanResourceApplication.Controllers
         #region AddDepartment
         [Authorize(Roles = "Admin")]
         [HttpPost("AddDepartment")]
+        /*
         public async Task<IActionResult> AddDepartment(DepartmentDTO department)
         {
             var validationResult = _departmentValidator.Validate(department);
@@ -48,7 +50,42 @@ namespace HumanResourceApplication.Controllers
             {
                 return BadRequest(new { Message = "An error occurred." });
             }
+        }*/
+
+        public async Task<IActionResult> AddDepartment(DepartmentDTO department)
+        {
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                var existingDepartment = await _departmentrepository.GetDepartmentByName(department.DepartmentName);
+                if (existingDepartment != null)
+                {
+                    throw new AlreadyExistsException("Department already exists.");
+                }
+                var validationResult = _departmentValidator.Validate(department);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    throw new CustomeValidationException(errors, timeStamp);
+                }
+                await _departmentrepository.AddDepartment(department);
+                return Ok(new
+                {
+                    Message = "Record created successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                // Return error response with timestamp
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
+            }
         }
+
         #endregion
 
         #region GetDepartment
@@ -72,6 +109,7 @@ namespace HumanResourceApplication.Controllers
         #region UpdateDepartment
         [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("Update")]
+        /*
         public async Task<IActionResult> UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
         {
             try
@@ -88,7 +126,42 @@ namespace HumanResourceApplication.Controllers
             {
                 return BadRequest(new { Message = "An error occurred." });
             }
+        }*/
+
+        public async Task<IActionResult> UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
+        {
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"); // Get current UTC timestamp in ISO 8601 format
+
+                var validationResult = _departmentValidator.Validate(departmentdto);
+                if (!validationResult.IsValid)
+                {
+                    throw new CustomeValidationException(validationResult.Errors.Select(e => e.ErrorMessage).ToList(), timeStamp);
+                }
+
+                var existingDepartment = await _departmentrepository.GetDepartmentById(departmentId);
+                if (existingDepartment == null)
+                {
+                    throw new AlreadyExistsException("Department not found.");
+                }
+                await _departmentrepository.UpdateDepartment(departmentId, departmentdto);
+
+                return Ok(new
+                {
+                    Message = "Record Modified Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
+            }
         }
+
         #endregion
 
         #region GetMaximumSalary

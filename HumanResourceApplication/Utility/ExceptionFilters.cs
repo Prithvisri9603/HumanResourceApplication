@@ -57,7 +57,7 @@ namespace HumanResourceApplication.Utility
                     TimeStamp = timeStamp,
                     message = exception.Message
                 })
-                {
+                {                
                     StatusCode = 500
                 };
                 context.ExceptionHandled = true;

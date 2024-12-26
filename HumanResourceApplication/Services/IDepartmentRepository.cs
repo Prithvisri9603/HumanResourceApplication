@@ -10,6 +10,8 @@ namespace HumanResourceApplication.Services
 
         //get all
         Task<List<DepartmentDTO>> GetDepartment();
+        Task<Department> GetDepartmentByName(string Departmentname);
+        Task<Department> GetDepartmentById(decimal departmentId);
 
         //update department
         Task UpdateDepartment(decimal departmentId, DepartmentDTO department);

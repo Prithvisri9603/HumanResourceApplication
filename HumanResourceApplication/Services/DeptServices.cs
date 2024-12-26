@@ -34,6 +34,20 @@ namespace HumanResourceApplication.Services
         }
         #endregion
 
+        public async Task<Department> GetDepartmentByName(string name)
+        {
+            return await _hrContext.Departments
+                .FirstOrDefaultAsync(d => d.DepartmentName == name);
+        }
+
+        public async Task<Department> GetDepartmentById(decimal departmentId)
+        {
+            // Assuming you're using Entity Framework Core or similar ORM to fetch the department by ID
+            return await _hrContext.Departments
+                .Where(d => d.DepartmentId == departmentId)
+                .FirstOrDefaultAsync();
+        }
+
         #region  AddDepartment
         /// <summary>
         /// Input:Enter all the department details to be added
