@@ -31,17 +31,17 @@ namespace HumanResourceApplication.Controllers
         /*
         public async Task<IActionResult> AddDepartment(DepartmentDTO department)
         {
-            var validationResult = _departmentValidator.Validate(department);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest("Validation failed");
-            }
-            try
-            {
-                if (department == null)
-                {
-                    return BadRequest();
-                }
+            /* var validationResult = _departmentValidator.Validate(department);
+             if (!validationResult.IsValid)
+             {
+                 return BadRequest("Validation failed");
+             }
+             try
+             {
+                 if (department == null)
+                 {
+                     return BadRequest();
+                 }
 
                 await _departmentrepository.AddDepartment(department);
                 return Ok("Record created successfully");
@@ -112,7 +112,7 @@ namespace HumanResourceApplication.Controllers
         /*
         public async Task<IActionResult> UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
         {
-            try
+            /*try
             {
                 var validationresult = _departmentValidator.Validate(departmentdto);
                 if (!validationresult.IsValid)
@@ -125,6 +125,43 @@ namespace HumanResourceApplication.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "An error occurred." });
+            }*/
+           
+        
+            try
+            {
+                // Validate the department DTO
+                var validationresult = _departmentValidator.Validate(departmentdto);
+                if (!validationresult.IsValid)
+                {
+                    // Return BadRequest with the validation errors
+                    return BadRequest(new
+                    {
+                        Message = "Validation failed",
+                        Errors = validationresult.Errors.Select(e => e.ErrorMessage).ToList()
+                    });
+                }
+
+                // Check if the department DTO is null
+                if (departmentdto == null)
+                {
+                    return BadRequest(new { Message = "Department data cannot be null." });
+                }
+
+                // Update the department in the repository
+                await _departmentrepository.UpdateDepartment(departmentId, departmentdto);
+
+                // Return success message
+                return Ok(new { Message = "Department record updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest with the error details in case of any exception
+                return BadRequest(new
+                {
+                    Message = "An error occu.",
+                    Details = ex.Message
+                });
             }
         }*/
 
@@ -161,7 +198,6 @@ namespace HumanResourceApplication.Controllers
                 });
             }
         }
-
         #endregion
 
         #region GetMaximumSalary

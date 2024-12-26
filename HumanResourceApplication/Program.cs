@@ -71,6 +71,7 @@ builder.Services.AddScoped<ILocationRepository, LocationServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ICountryRepository, CountryService>();
 builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
+builder.Services.AddScoped<IRegionRepository, RegionServices>();
 
 //configure the fluentvalidation
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
