@@ -151,6 +151,8 @@ namespace HumanResourceApplication.Controllers
                     Message = ex.Message
                 });
             }
+
+
         }
 
 
@@ -217,11 +219,10 @@ namespace HumanResourceApplication.Controllers
                 // Return a successful response with the timestamp
                 return Ok(new
                 {
-                    TimeStamp = timeStamp,
+                    //TimeStamp = timeStamp,
                     Message = "Country record updated successfully"
                 });
             }
-            
             catch (Exception ex)
             {
                 // Handle general exceptions, return a bad request with the exception message and timestamp
@@ -232,6 +233,8 @@ namespace HumanResourceApplication.Controllers
                     Details = ex.Message
                 });
             }
+
+
 
 
 

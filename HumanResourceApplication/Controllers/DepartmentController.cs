@@ -29,24 +29,60 @@ namespace HumanResourceApplication.Controllers
         [HttpPost("AddDepartment")]
         public async Task<IActionResult> AddDepartment(DepartmentDTO department)
         {
-            var validationResult = _departmentValidator.Validate(department);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest("Validation failed");
-            }
+            /* var validationResult = _departmentValidator.Validate(department);
+             if (!validationResult.IsValid)
+             {
+                 return BadRequest("Validation failed");
+             }
+             try
+             {
+                 if (department == null)
+                 {
+                     return BadRequest();
+                 }
+
+                 await _departmentrepository.AddDepartment(department);
+                 return Ok("Record created successfully");
+             }
+             catch (Exception)
+             {
+                 return BadRequest(new { Message = "An error occurred." });
+             }*/
+
+
             try
             {
+                // Validate the department DTO
+                var validationResult = _departmentValidator.Validate(department);
+                if (!validationResult.IsValid)
+                {
+                    // Return BadRequest with the validation errors
+                    return BadRequest(new
+                    {
+                        Message = "Validation failed",
+                        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
+                    });
+                }
+                // Check if the department object is null
                 if (department == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new { Message = "Department data cannot be null." });
                 }
 
+                // Add the department to the repository
                 await _departmentrepository.AddDepartment(department);
-                return Ok("Record created successfully");
+
+                // Return success message
+                return Ok(new { Message = "Department created successfully" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { Message = "An error occurred." });
+                // Return BadRequest with a generic error message and exception details
+                return BadRequest(new
+                {
+                    Message = "An error occurred while adding the department.",
+                    Details = ex.Message
+                });
             }
         }
         #endregion
@@ -74,7 +110,7 @@ namespace HumanResourceApplication.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
         {
-            try
+            /*try
             {
                 var validationresult = _departmentValidator.Validate(departmentdto);
                 if (!validationresult.IsValid)
@@ -87,8 +123,47 @@ namespace HumanResourceApplication.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "An error occurred." });
+            }*/
+           
+        
+            try
+            {
+                // Validate the department DTO
+                var validationresult = _departmentValidator.Validate(departmentdto);
+                if (!validationresult.IsValid)
+                {
+                    // Return BadRequest with the validation errors
+                    return BadRequest(new
+                    {
+                        Message = "Validation failed",
+                        Errors = validationresult.Errors.Select(e => e.ErrorMessage).ToList()
+                    });
+                }
+
+                // Check if the department DTO is null
+                if (departmentdto == null)
+                {
+                    return BadRequest(new { Message = "Department data cannot be null." });
+                }
+
+                // Update the department in the repository
+                await _departmentrepository.UpdateDepartment(departmentId, departmentdto);
+
+                // Return success message
+                return Ok(new { Message = "Department record updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Return a BadRequest with the error details in case of any exception
+                return BadRequest(new
+                {
+                    Message = "An error occu.",
+                    Details = ex.Message
+                });
             }
         }
+
+        
         #endregion
 
         #region GetMaximumSalary
