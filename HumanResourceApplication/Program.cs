@@ -69,6 +69,7 @@ builder.Services.AddSingleton(mapper);
 //Register the repository
 builder.Services.AddScoped<ILocationRepository, LocationServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
+builder.Services.AddScoped<ICountryRepository, CountryService>();
 
 //configure the fluentvalidation
 builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
