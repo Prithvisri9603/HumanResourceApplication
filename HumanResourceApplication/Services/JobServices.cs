@@ -17,6 +17,9 @@ namespace HumanResourceApplication.Services
             _mapper = mapper;
         }
 
+
+        #region Fetch methods
+
         //Display all jobs as list
         public async Task <List<JobDTO>> GetAllJobs()
         {
@@ -25,7 +28,22 @@ namespace HumanResourceApplication.Services
             return jobsList;
 
         }
-        
+
+        public async Task<JobDTO> GetJobById(string jobId)
+        {
+            var job = await _context.Jobs.FindAsync(jobId);
+
+            if (job == null)
+            {
+                return null;
+            }
+            var jobDTO = _mapper.Map<JobDTO>(job);
+            return jobDTO;
+        }
+        #endregion
+
+
+        #region Add new Job
         //Add new Job
         public async Task AddJob(JobDTO jobDTO)
         {
@@ -34,7 +52,10 @@ namespace HumanResourceApplication.Services
             await _context.SaveChangesAsync();
         }
 
+        #endregion
 
+
+        #region Update Job details including MinMax Salary
         //Update with new Job details
         public async Task UpdateJob(string jobId, JobDTO jobDTO)
         {
@@ -47,6 +68,8 @@ namespace HumanResourceApplication.Services
             await _context.SaveChangesAsync();
 
         }
+        
+
 
         public async Task UpdateJobMinAndMaxSalary(string jobID,decimal newMin, decimal newMax)
         {
@@ -62,17 +85,7 @@ namespace HumanResourceApplication.Services
 
         }
 
-        public async Task<JobDTO> GetJobById(string jobId)
-        {
-            var job = await _context.Jobs.FindAsync(jobId);
-
-            if (job == null)
-            {
-                return null;
-            }
-            var jobDTO = _mapper.Map<JobDTO>(job);
-            return jobDTO;
-        }
+        #endregion
 
 
     }
