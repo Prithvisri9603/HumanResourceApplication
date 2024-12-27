@@ -1,4 +1,5 @@
-﻿using HumanResourceApplication.DTO;
+﻿using FluentValidation;
+using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
 using HumanResourceApplication.Utility;
 using HumanResourceApplication.Validators;
@@ -15,9 +16,9 @@ namespace HumanResourceApplication.Controllers
 
 
         private readonly IJobHistoryRepository _repository;
-        private readonly JobHistoryDTOValidator _validator;
+        private readonly IValidator<JobHistoryDTO> _validator;
 
-        public JobHistoryController(IJobHistoryRepository repository, JobHistoryDTOValidator validator)
+        public JobHistoryController(IJobHistoryRepository repository, IValidator<JobHistoryDTO> validator)
         {
             _repository = repository;
             _validator = validator;
@@ -38,6 +39,10 @@ namespace HumanResourceApplication.Controllers
             try
             {
                 List<JobHistoryDTO> jobHisList = await _repository.GetAllJobHistory();
+                if (jobHisList == null || jobHisList.Count == 0)
+                {
+                    return NotFound(new { message = "No job history found." });
+                }
                 return Ok(jobHisList);
             }
             catch (Exception ex)

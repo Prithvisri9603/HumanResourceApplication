@@ -19,9 +19,9 @@ namespace HumanResourceApplication.Controllers
     public class JobController : ControllerBase
     {
         private readonly IJobRepository _jobRepository;
-        private readonly JobsDTOValidator _validator;
+        private readonly IValidator<JobDTO> _validator;
 
-        public JobController(IJobRepository jobRepository, JobsDTOValidator validator)
+        public JobController(IJobRepository jobRepository, IValidator<JobDTO> validator)
         {
             _jobRepository = jobRepository;
             _validator = validator;
@@ -36,6 +36,10 @@ namespace HumanResourceApplication.Controllers
             try
             {
                 List<JobDTO> jobs = await _jobRepository.GetAllJobs();
+                if (jobs.Count == 0 || jobs == null)
+                {
+                    return NotFound(new { message = "No job found" });
+                }
                 return Ok(jobs);
             }
             catch (Exception ex)
