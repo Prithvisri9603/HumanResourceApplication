@@ -1,6 +1,7 @@
 ﻿using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Utility;
 using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,21 +31,34 @@ namespace HumanResourceApplication.Controllers
         [HttpPost("Add new Employee")]
         public async Task<IActionResult> AddEmployee(EmployeeDTO employee)
         {
-            var validationResult = await _employeeValidator.ValidateAsync(employee);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new
+            var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            try { 
+                var existingUser = await _employeeRepo.FindByEmail(employee.Email);
+            
+                var validationResult = await _employeeValidator.ValidateAsync(employee);
+             
+                if(existingUser != null)
                 {
-                    timeStamp = DateTime.UtcNow,
-                    message = "Validation failed",
-                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
-                });
-            }
-            try
-            {
+                    throw new AlreadyExistsException("Employee with same email exists");
+                }
+                if (!validationResult.IsValid)
+                    {
+                    var errors = validationResult.Errors.Select(error => error.ErrorMessage).ToList();
+                    throw new CustomeValidationException(errors, timeStamp);
+                    }
+                
                 await _employeeRepo.AddEmployee(employee);
                 return Ok("Record Created Successfully");
-            }
+                }
+            catch (CustomeValidationException customEx)
+                {
+                return BadRequest(new
+                {
+                    timeStamp = customEx.TimeStamp,
+                    message = "Validation failed",
+                    errors = customEx.Errors
+                });
+                }
             catch (Exception ex)
             {
                 if (ex.Message.Contains("email address already exists"))
@@ -68,29 +82,42 @@ namespace HumanResourceApplication.Controllers
         [HttpPut("Modify")]
         public async Task<IActionResult> ModifyEmployee(int employeeId, EmployeeDTO employee)
         {
-            var validationResult = await _employeeValidator.ValidateAsync(employee);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new
-                {
-                    timeStamp = DateTime.UtcNow,
-                    message = "Validation failed",
-                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
-                });
-            }
+            var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
             try
             {
+                // Validate the incoming employee data
+                var validationResult = await _employeeValidator.ValidateAsync(employee);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(error => error.ErrorMessage).ToList();
+                    throw new CustomeValidationException(errors, timeStamp);
+                }
+
+                // Perform the modification
                 await _employeeRepo.ModifyEmployee(employeeId, employee);
                 return Ok("Record Modified Successfully");
             }
+            catch (CustomeValidationException customEx)
+            {
+                // Handle custom validation exceptions
+                return BadRequest(new
+                {
+                    timeStamp = customEx.TimeStamp,
+                    message = "Validation failed",
+                    errors = customEx.Errors 
+                });
+            }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("email address already exists"))
-                    return BadRequest(new { timestamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
-                return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
+                return BadRequest(new
+                {
+                    timeStamp = DateOnly.FromDateTime(DateTime.Now),
+                    message = ex.Message
+                });
             }
         }
+
 
         #endregion
 
@@ -431,11 +458,16 @@ namespace HumanResourceApplication.Controllers
         /// <returns>Returns a success message or a Bad Request response if an error occurs.</returns>
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Update Email")]
-        public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
+        public async Task<IActionResult> UpdateEmployeeEmail(string currentemail, string newemail)
         {
             try
             {
-                await _employeeRepo.UpdateEmployeeEmail(email, employeeDto);
+                var existingName = await _employeeRepo.FindByEmail(newemail);
+                if(existingName != null)
+                {
+                    throw new AlreadyExistsException("New email already exists");
+                }
+                await _employeeRepo.UpdateEmployeeEmail(currentemail, newemail);
                 return Ok("Record Modified Successfully");
             }
             catch (Exception ex)

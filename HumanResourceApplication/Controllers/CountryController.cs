@@ -116,6 +116,8 @@ namespace HumanResourceApplication.Controllers
             {
                 var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
+
+
                 // Check if the country already exists
                 var existingCountry = await _countryRepository.GetCountryById(country.CountryId);
                 if (existingCountry != null)
@@ -154,10 +156,6 @@ namespace HumanResourceApplication.Controllers
 
 
         }
-
-
-
-
 
         
         #endregion
