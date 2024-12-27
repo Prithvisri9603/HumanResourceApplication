@@ -308,7 +308,7 @@ namespace HumanResourceApplication.Services
         /// </summary>
         /// <returns>A dictionary with location IDs as keys and employee counts as values.</returns>
         /// <exception cref="Exception">Thrown if no employees are found grouped by location.</exception>
-        public async Task<Dictionary<decimal, int>> CountAllEmployeesGroupByLocation()
+        public async Task<Dictionary<string, int>> CountAllEmployeesGroupByLocation()
         {
             var result = await _context.Employees.Join(
                 _context.Departments,
@@ -316,9 +316,15 @@ namespace HumanResourceApplication.Services
                 department => department.DepartmentId,
                 (employee, department) => new { department.LocationId, employee.EmployeeId }
             )
-            .GroupBy(x => x.LocationId)
-            .Select(g => new { LocationId = g.Key ?? 0, EmployeeCount = g.Count() })
-            .ToDictionaryAsync(g => g.LocationId, g => g.EmployeeCount);
+            .Join(
+                _context.Locations,
+                location => location.LocationId,
+                loc => loc.LocationId,
+                (location, loc) => new { loc.City, location.EmployeeId }
+            )
+            .GroupBy(x => x.City)
+            .Select(g => new { Location = g.Key, EmployeeCount = g.Count() })
+            .ToDictionaryAsync(g => g.Location, g => g.EmployeeCount);
 
             if (!result.Any())
             {
