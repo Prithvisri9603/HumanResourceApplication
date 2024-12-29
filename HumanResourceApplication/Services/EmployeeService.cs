@@ -366,8 +366,7 @@ namespace HumanResourceApplication.Services
             throw new Exception($"No job found for employee ID {employeeId}");
         }
 
-<<<<<<< HEAD
-=======
+
         #endregion
 
         #region Update Employee Email
@@ -378,7 +377,7 @@ namespace HumanResourceApplication.Services
         /// <param name="email">The current email of the employee.</param>
         /// <param name="employeeDto">The updated employee data.</param>
         /// <exception cref="Exception">Thrown if the employee does not exist.</exception>
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
+
         public async Task UpdateEmployeeEmail(string currentemail, string newemail)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == currentemail);
@@ -388,14 +387,14 @@ namespace HumanResourceApplication.Services
                 throw new Exception($"No employee found with JobId '{currentemail}'.");
             }
 
-<<<<<<< HEAD
+
             
             employee.Email = newemail;
-=======
+
 
             employee.Email = newemail;
 
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
+
 
          
             await _context.SaveChangesAsync();

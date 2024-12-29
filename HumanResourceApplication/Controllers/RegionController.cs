@@ -29,29 +29,10 @@ namespace HumanResourceApplication.Controllers
         [HttpPost("AddRegion")]
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
         {
-<<<<<<< HEAD
-            var validationResult = await _regionValidator.ValidateAsync(region);
-=======
-            /*var validationResult = _regionValidator.Validate(region);
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
-            if (!validationResult.IsValid)
-            {
-                return BadRequest("Validation failed");
-            }
-            try
-            {
-                if (region == null)
-                {
-                    return BadRequest();
-                }
 
-                await _regionRepository.AddNewRegion(region);
-                return Ok("Record created successfully");
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { Message = "An error occurred." });
-            }*/
+            //var validationResult = await _regionValidator.ValidateAsync(region);
+
+           
             
             try
             {
@@ -87,8 +68,8 @@ namespace HumanResourceApplication.Controllers
                     //TimeStamp = timeStamp,
                     Message = "Region record created successfully"
                 });
-            }
-<<<<<<< HEAD
+            
+
         }
 
         //public async Task<IActionResult> AddNewRegion(RegionDTO region)
@@ -109,8 +90,8 @@ namespace HumanResourceApplication.Controllers
         //    }
         //}
 
-=======
-            catch (Exception ex)
+
+            catch (Exception )
             {
                 // Return BadRequest with the exception message and timestamp in case of an error
                 return BadRequest(new
@@ -121,7 +102,6 @@ namespace HumanResourceApplication.Controllers
                 });
             }
         }   
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
         #endregion
 
         #region UpdateRegion
@@ -288,8 +268,9 @@ namespace HumanResourceApplication.Controllers
         
     }
     #endregion
-
-
-
 }
+
+
+
+
 
