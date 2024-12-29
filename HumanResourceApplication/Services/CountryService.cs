@@ -25,13 +25,13 @@ namespace HumanResourceApplication.Services
         public async Task<List<CountryDTO>> GetAllCountries()
         {
             
-            var countries = await _hrContext.Countries.ToListAsync();
+            var countries = await _hrContext.Countries.FromSqlRaw("EXEC GetAllCountries").ToListAsync();
 
             var countryDTOList = _mapper.Map<List<CountryDTO>>(countries);
             return countryDTOList;
 
             
-            await _hrContext.SaveChangesAsync();
+            
         }
         #endregion
 
@@ -55,7 +55,7 @@ namespace HumanResourceApplication.Services
             return countryDTO;
 
             
-            await _hrContext.SaveChangesAsync();
+            
         }
         #endregion
 

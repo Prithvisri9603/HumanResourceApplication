@@ -10,17 +10,41 @@ namespace HumanResourceApplication.Services
         private readonly HrContext _context;
         private readonly IMapper _mapper;
 
+
         public JobHistoryServices(HrContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
+
+        #region Fetch Job History Methods
+
         public async Task<List<JobHistoryDTO>>GetAllJobHistory()
         {
             var jobHistory = await _context.JobHistories.ToListAsync();
             var joblist = _mapper.Map<List<JobHistoryDTO>>(jobHistory);
             return joblist;
+        }
+
+        public async Task<JobHistoryDTO> GetJobHistoryByEmployeeIdAndJob(decimal empid, string jobId)
+        {
+            
+            var jobHistory = await _context.JobHistories
+                                           .FirstOrDefaultAsync(jh => jh.EmployeeId == empid && jh.JobId == jobId);
+
+            if (jobHistory == null)
+            {
+                return null;
+            }
+
+            return new JobHistoryDTO
+            {
+                EmployeeId = jobHistory.EmployeeId,
+                StartDate = jobHistory.StartDate,
+                JobId = jobHistory.JobId,
+                DepartmentId = jobHistory.DepartmentId
+            };
         }
 
 
@@ -39,6 +63,31 @@ namespace HumanResourceApplication.Services
 
             return totalExperience;
         }
+
+        public async Task<TimeSpan?> GetTotalExperienceByEmployeeIdAsync(int empId)
+        {
+            var jobHistories = await _context.JobHistories
+                                             .Where(j => j.EmployeeId == empId)
+                                             .ToListAsync();
+
+            if (!jobHistories.Any())
+            {
+                return null;
+            }
+
+            // Calculate the total experience by summing up the durations
+
+            TimeSpan totalExperience = jobHistories
+        .Aggregate(TimeSpan.Zero, (sum, job) =>
+            sum + (job.EndDate.ToDateTime(TimeOnly.MinValue) - job.StartDate.ToDateTime(TimeOnly.MinValue))
+        );
+
+            return totalExperience;
+        }
+
+        #endregion
+
+        #region Add Job History to existing employee
         public async Task AddJobHistory(decimal empId, DateOnly startDate, string jobId, decimal deptId)
         {
             // Check if the employee exists
@@ -63,7 +112,7 @@ namespace HumanResourceApplication.Services
                 StartDate = startDate,
                 JobId = jobId,
                 DepartmentId = deptId,
-                EndDate = DateOnly.FromDateTime(DateTime.Now) // Assuming current date as end date
+                EndDate = DateOnly.FromDateTime(DateTime.Now)
             };
 
             _context.JobHistories.Add(jobHistory);
@@ -85,6 +134,10 @@ namespace HumanResourceApplication.Services
         //        await _context.SaveChangesAsync();
 
         //}
+
+        #endregion
+
+        #region Update Job History
 
         public async Task UpdateJobHistory(decimal id,DateOnly newStartDate, DateOnly newEndDate)
         {
@@ -117,26 +170,9 @@ namespace HumanResourceApplication.Services
 
         }
         */
-        public async Task<TimeSpan?> GetTotalExperienceByEmployeeIdAsync(int empId)
-        {
-            var jobHistories = await _context.JobHistories
-                                             .Where(j => j.EmployeeId == empId)
-                                             .ToListAsync();
 
-            if (!jobHistories.Any())
-            {
-                return null;
-            }
-
-            // Calculate the total experience by summing up the durations
-
-            TimeSpan totalExperience = jobHistories
-        .Aggregate(TimeSpan.Zero, (sum, job) =>
-            sum + (job.EndDate.ToDateTime(TimeOnly.MinValue) - job.StartDate.ToDateTime(TimeOnly.MinValue))
-        );
-
-            return totalExperience;
-        }
+        #endregion
+        
 
 
     }

@@ -10,7 +10,7 @@ namespace HumanResourceApplication.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthServices _authservice;
-
+        
         public AuthController(IAuthServices authRepository)
         {
             _authservice = authRepository;

@@ -22,6 +22,7 @@
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
+<<<<<<< HEAD
                 let rows = data.map(country => `
                 <tr>
                     <td>${country.countryId}</td>
@@ -44,12 +45,22 @@
                 </table>
             `;
                 $('#countryList').html(table);
+=======
+                let list = data.map(
+                    country => `<li>${country.countryId} ${country.countryName} (Region: ${country.regionId})</li>`
+                ).join('');
+                $('#countryList').html(list || '<li>No country available</li>');
+>>>>>>> origin/master
             },
             error: handleError,
         });
     });
 
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> origin/master
     // Fetch country by ID
     $('#getCountryById').click(function () {
         const countryId = $('#countryIdInput').val(); // Get the input value
@@ -62,6 +73,7 @@
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
+<<<<<<< HEAD
 
                 $('#countryDetails').html(`
                     <table>
@@ -83,6 +95,9 @@
                     </table>
                 `);
                 //$('#countryDetails').html(`<p>Country Name: ${data.countryName}</p>`);
+=======
+                $('#countryDetails').html(`<p>Country Name: ${data.countryName}</p>`);
+>>>>>>> origin/master
             },
             error: function (xhr) {
                 console.error(xhr);
@@ -95,8 +110,11 @@
         });
     });
 
+<<<<<<< HEAD
     
 
+=======
+>>>>>>> origin/master
     $('#addCountry').click(function () {
         const newCountry = {
             countryId: $('#newCountryId').val(),

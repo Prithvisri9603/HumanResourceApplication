@@ -11,13 +11,18 @@
         }
     }
 
+<<<<<<< HEAD
     // Fetch all regions and display in table format
+=======
+    // Fetch all regions
+>>>>>>> origin/master
     $('#getAllRegions').click(function () {
         if (!token) {
             alert('You are not authenticated. Please log in.');
             return;
         }
         $.ajax({
+<<<<<<< HEAD
             url: '/api/v1/Region/GetAllRegion', // API endpoint for all regions
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
@@ -42,12 +47,27 @@
                     </table>
                 `;
                 $('#regionList').html(table);
+=======
+            url: '/api/v1/Region/GetAllRegion', // API endpoint for all countries
+            type: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` },
+            success: function (data) {
+                let list = data.map(
+                    region => `<li>${region.regionId} ${region.regionName}</li>`
+                ).join('');
+                $('#regionList').html(list || '<li>No region available</li>');
+>>>>>>> origin/master
             },
             error: handleError,
         });
     });
 
+<<<<<<< HEAD
     // Fetch region by ID and display in table format
+=======
+
+    // Fetch region by ID
+>>>>>>> origin/master
     $('#getRegionById').click(function () {
         const regionId = $('#regionIdInput').val(); // Get input value from a field
         if (!regionId) {
@@ -65,6 +85,7 @@
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
                 if (data) {
+<<<<<<< HEAD
                     let table = `
                         <table border="1" style="width: 100%; border-collapse: collapse;">
                             <thead>
@@ -82,6 +103,11 @@
                         </table>
                     `;
                     $('#regionDetail').html(table);
+=======
+                    $('#regionDetail').html(
+                        `<p>ID: ${data.regionId}</p><p>Name: ${data.regionName}</p>`
+                    );
+>>>>>>> origin/master
                 } else {
                     $('#regionDetail').html('<p>No region found.</p>');
                 }
@@ -94,6 +120,11 @@
     });
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/master
     $('#addRegion').click(function () {
         const regionIdInput = $('#AddregionIdInput').val().trim(); // Fetch and trim input
         const regionId = parseFloat(regionIdInput); // Convert to decimal
@@ -131,6 +162,7 @@
         });
     });
 
+<<<<<<< HEAD
     $('#updateRegion').click(function () {
         const regionId = $('#updateRegionId').val();
         const updatedRegion = {
@@ -190,6 +222,8 @@
             },
         });
     });
+=======
+>>>>>>> origin/master
 
 
 

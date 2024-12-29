@@ -16,7 +16,7 @@ namespace HumanResourceApplication.Services
         Task<List<RegionDTO>> ListAllRegion();
 
         //Get region by id
-        Task<Region> GetRegionById(decimal regionId);
+        Task<RegionDTO> GetRegionById(decimal regionId);
 
         //delete region by id
         Task DeleteRegionById(decimal regionId);
