@@ -118,6 +118,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//Setting up AJAX
+app.UseStaticFiles();
+
+app.UseRouting();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

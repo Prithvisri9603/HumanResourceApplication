@@ -1,0 +1,971 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Human Resource Application</title>
+    <script>
+        // Clear token only on full reload, not on navigation
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+            localStorage.removeItem('jwtToken');
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F5EFFF;
+            color: #333;
+        }
+
+        header {
+            background-color: #CDC1FF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        section {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+        }
+
+            section h3 {
+                margin-bottom: 15px;
+                font-size: 1.2em;
+                border-bottom: 2px solid #007BFF;
+                padding-bottom: 5px;
+            }
+
+        button {
+            background-color: #563A9C;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: calc(100% - 20px);
+            font-size: 0.9em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px 15px;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9f5fb;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+            ul li {
+                background-color: #f9f9f9;
+                padding: 10px;
+                margin: 5px 0;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+
+        footer {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .collapsible {
+            background-color: #563A9C;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            text-align: left;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            font-size: 1em;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+            .collapsible:hover {
+                background-color: #0056b3;
+            }
+
+        .content {
+            display: none;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+        }
+/*To scroll*/
+
+        /*.collapsible {
+            background-color: #563A9C;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            text-align: left;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 5px;
+            width: 100%;
+            outline: none;
+        }
+
+            .collapsible:hover {
+                background-color: #0056b3;
+            }
+
+            .collapsible.active {
+                background-color: #333;
+            }
+
+        .content {
+            display: none;
+            padding: 10px;
+            background-color: white;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #ddd;
+        }*/
+
+        /* General card styling */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            overflow: hidden;
+            max-width: 800px;
+        }
+
+        /* Collapsible button styling */
+        .collapsible {
+            background-color: #563A9C;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            text-align: left;
+            border: none;
+            width: 100%;
+            font-size: 1.2em;
+            font-weight: bold;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .collapsible:hover {
+                background-color: #0056b3;
+            }
+
+            .collapsible.active {
+                background-color: #333;
+            }
+
+        /* Content inside the collapsible card */
+        .content {
+            display: none;
+            padding: 20px;
+            background-color: #f9f9f9;
+            font-size: 0.95em;
+        }
+
+        /* Table and list styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #563A9C;
+            color: white;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+            ul li {
+                background: #fff;
+                padding: 10px;
+                margin: 5px 0;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+        @media (max-width: 600px) {
+            .card {
+                width: 90%;
+            }
+        }
+
+
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            input, button {
+                width: 100%;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+
+            th {
+                text-align: left;
+            }
+
+            th, td {
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+        
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Human Resource Application</h1>
+    </header>
+
+    <main>
+        <section class="card">
+            <button class="collapsible">Job Operations</button>
+            <div class="content">
+                <h2>Job Operations</h2>
+
+                <h3>Fetch All Jobs</h3>
+                <button id="getJobs">Fetch All Jobs</button>
+                <div id="container">
+                    <table>
+                        <tbody id="jobList">
+                            <!-- Job rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Fetch Job by ID</h3>
+                <input type="text" id="jobIdInput" placeholder="Enter Job ID">
+                <button id="getJobById">Fetch Job By ID</button>
+                <div id="jobDetails"></div>
+
+                <h3>Add Job</h3>
+                <input type="text" id="newJobId" placeholder="Job ID">
+                <input type="text" id="newJobTitle" placeholder="Job Title">
+                <input type="number" id="newMinSalary" placeholder="Min Salary">
+                <input type="number" id="newMaxSalary" placeholder="Max Salary">
+                <button id="addJob">Add Job</button>
+
+                <!-- Update job -->
+                <h3>Update Job</h3>
+                <input type="text" id="updateJobId" placeholder="Job ID to Update" />
+                <input type="text" id="updateJobTitle" placeholder="New Job Title" />
+                <input type="number" id="updateMinSalary" placeholder="New Min Salary" />
+                <input type="number" id="updateMaxSalary" placeholder="New Max Salary" />
+                <button id="updateJob">Update Job</button>
+
+                <!-- Update min/max salary -->
+                <h3>Update Job Salary</h3>
+                <input type="text" id="updateSalaryJobId" placeholder="Job ID" />
+                <input type="number" id="updateNewMinSalary" placeholder="New Min Salary" />
+                <input type="number" id="updateNewMaxSalary" placeholder="New Max Salary" />
+                <button id="updateJobSalary">Update Salary</button>
+             </div>
+        </section>
+
+        <section class="card">
+
+            <button class="collapsible">Country Operations</button>
+            <div class="content">
+                <h2>Country Operations</h2>
+
+                <h3>Get All Countries</h3>
+                <button id="getAllCountries">Fetch All Countries</button>
+                <ul id="countryList"></ul>
+
+                <h3>Fetch Country by ID</h3>
+                <input type="text" id="countryIdInput" placeholder="Enter Country ID">
+                <button id="getCountryById">Fetch Country</button>
+                <div id="countryDetails"></div>
+
+                <h3>Add Country</h3>
+                <input type="text" id="newCountryId" placeholder="Country ID">
+                <input type="text" id="newCountryName" placeholder="Country Name">
+                <input type="text" id="newRegionId" placeholder="Region ID">
+                <button id="addCountry">Add Country</button>
+
+                <!-- Update Country-->
+
+                <h3>Update Country</h3>
+                <input type="text" id="updateCountryId" placeholder="Country ID">
+                <input type="text" id="updateCountryName" placeholder="New Country Name">
+                <input type="text" id="updateCountryCode" placeholder="New Region ID">
+                <button id="updateCountry">Update Country</button>
+
+
+                <h3>Delete Country</h3>
+                <input type="text" id="deleteCountryId" placeholder="Country ID">
+                <button id="deleteCountry">Delete Country</button>
+
+            </div>
+
+        </section>
+
+        <section class="card">
+            <button class="collapsible">Region Operations</button>
+            <div class="content">
+                <h2>Region Operations</h2>
+
+                <h3>Get All Regions</h3>
+                <button id="getAllRegions">Fetch All Regions</button>
+                <ul id="regionList"></ul>
+
+                <h3>Get Region by ID</h3>
+                <input type="text" id="regionIdInput" placeholder="Enter Region ID">
+                <button id="getRegionById">Get Region</button>
+                <div id="regionDetail"></div>
+
+
+                <h3>Add Region</h3>
+                <input type="text" id="AddregionIdInput" placeholder="Region ID">
+                <input type="text" id="regionNameInput" placeholder="Region Name">
+                <button id="addRegion">Add Region</button>
+
+
+
+                <h3>Update Region</h3>
+                <input type="text" id="updateRegionId" placeholder="Region ID">
+                <input type="text" id="updateRegionName" placeholder="Region Name">
+                <button id="updateRegion">Update Region</button>
+
+
+
+                <h3>Delete Region</h3>
+                <input type="text" id="regionIdToDelete" placeholder="Region ID">
+                <button id="deleteRegion">Delete Region</button>
+            <</div>
+
+        </section>
+
+        <section class="card">
+
+            <button class="collapsible">Job History</button>
+            <div class="content">
+                <!-- Job History Operations-->
+                <h1>Job History</h1>
+
+
+                <h3>Get All Job Histories</h3>
+                <button id="getAllJobHistories">Fetch All</button>
+                <ul id="jobHistoryList"></ul>
+
+
+
+                <h3>Get Job History by ID</h3>
+                <input type="text" id="jobHistoryIdInput" placeholder="Job History ID">
+                <button id="getJobHistoryById">Fetch Job History</button>
+
+
+
+                <h3>Get Job Histories (Less than 1 Year Experience)</h3>
+                <input type="text" id="empIdInput" placeholder="Employee ID">
+                <button id="getJobHistoryByExperience">Fetch</button>
+
+
+
+                <h3>Add Job History to an employee</h3>
+                <label for="empId">Employee ID:</label>
+                <input type="number" id="newempId" placeholder="Enter Employee ID" required><br><br>
+
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="newstartDate" placeholder="Enter Start Date" required><br><br>
+
+                <label for="jobId">Job ID:</label>
+                <input type="text" id="newjobId" placeholder="Enter Job ID" required><br><br>
+
+                <label for="deptId">Department ID:</label>
+                <input type="number" id="newdeptId" placeholder="Enter Department ID" required><br><br>
+
+                <button id="addJobHistory">Add Job History</button>
+
+
+
+                <h3>Update Job History</h3>
+                <input type="text" id="empId" placeholder="Employee ID">
+                <input type="date" id="startDate" placeholder="Start Date">
+                <input type="date" id="endDate" placeholder=" End Date">
+                <button id="updateJobHistory">Update Job History</button>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <button class="collapsible">Department Operations</button>
+            <div class="content">
+                <!--Department Operations-->
+                <h1>Department Operations</h1>
+
+                <!-- Get all departments -->
+                <div>
+                    <h3>Get All Departments</h3>
+                    <button id="getAllDepartments">Get All Departments</button>
+                    <ul id="allDepartmentsList"></ul>
+                </div>
+
+
+                <!-- Get departments by Id -->
+                <div>
+                    <h3>Get Departments by Id</h3>
+                    <input type="number" id="empId" placeholder="Enter Employee ID" />
+                    <button id="getDepartmentsByEmp">Get Department</button>
+                    <div id="departmentsList"></div>
+                </div>
+
+                <!-- Add new department -->
+                <div>
+                    <h3>Add Department</h3>
+                    <input type="number" id="newDepartmentId" placeholder="Enter Department Id" />
+                    <input type="text" id="newDepartmentName" placeholder="Enter Department Name" />
+                    <input type="number" id="newDepartmentManagerId" placeholder="Enter Manager ID" />
+                    <input type="number" id="newDepartmentLocationId" placeholder="Enter Location ID" />
+                    <button id="addDepartment">Add Department</button>
+                </div>
+
+                <!-- Modify department -->
+                <div>
+                    <h3>Update Department</h3>
+                    <input type="number" id="updateDepartmentId" placeholder="Enter Department ID to Update" />
+                    <input type="text" id="updateDepartmentName" placeholder="Enter Department Name" />
+                    <input type="number" id="updateDepartmentManagerId" placeholder="Enter Manager ID" />
+                    <input type="number" id="updateDepartmentLocationId" placeholder="Enter Location ID" />
+                    <button id="updateDepartment">Update Department</button>
+                    <div id="updateResult"></div>
+                </div>
+
+                <!-- Find max salary in department -->
+                <div>
+                    <h3>Find Max Salary in Department</h3>
+                    <input type="number" id="maxSalaryDeptId" placeholder="Department ID" />
+                    <button id="findMaxSalary">Find Max Salary</button>
+                    <div id="maxSalaryResult"></div>
+                </div>
+
+                <!-- Find min salary in department -->
+                <div>
+                    <h3>Find Min Salary in Department</h3>
+                    <input type="number" id="minSalaryDeptId" placeholder="Department ID" />
+                    <button id="findMinSalary">Find Min Salary</button>
+                    <div id="minSalaryResult"></div>
+                </div>
+
+                <!-- Delete department -->
+                <div>
+                    <h3>Delete Department</h3>
+                    <input type="number" id="deleteDepartmentId" placeholder="Department ID to Delete" />
+                    <button id="deleteDepartment">Delete Department</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <!-- Operations Locations-->
+            <button class="collapsible">Location</button>
+            <div class="content">
+
+
+                <h1> Location operations </h1>
+                <h3>Get All Locations</h3>
+                <button id="getLocations">Fetch all locations</button>
+                <ul id="locationList"></ul>
+
+                <!-- Add Locations-->
+                <div>
+                    <h3>Add Location</h3>
+                    <input type="text" id="newLocationId" placeholder="Location ID">
+                    <input type="text" id="newStreetAddress" placeholder="Street Address">
+                    <input type="text" id="newPostalCode" placeholder="Postal code">
+                    <input type="text" id="newCity" placeholder="City">
+                    <input type="text" id="newStateProvince" placeholder="State Province">
+                    <input type="text" id="newCountryId" placeholder="Country ID" maxlength="2" style="text-transform: uppercase;" />
+                    <button id="addLocation">Add Location</button>
+                </div>
+
+                <!-- Update Location-->
+                <div>
+                    <h3>Update Location</h3>
+                    <input type="text" id="updateLocationId" placeholder="Location ID">
+                    <input type="text" id="updateStreetAddress" placeholder="Street Address">
+                    <input type="text" id="updatePostalCode" placeholder="Postal code">
+                    <input type="text" id="updateCity" placeholder="City">
+                    <input type="text" id="updateStateProvince" placeholder="State Province">
+                    <input type="text" id="updateCountryId" />
+
+                    <button id="updateLocation">Update Location</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+
+            <button class="collapsible">Employee</button>
+            <div class="content">
+                <!-- Operations Employee-->
+                <h1>Employee Management System</h1>
+
+
+                <!-- Add Employee Form -->
+                <h2>Add Employee</h2>
+                <form id="addEmployeeForm">
+                    <label for="addEmployeeId">Employee ID:</label>
+                    <input type="number" id="addEmployeeId" required><br>
+
+                    <label for="addFirstName">First Name:</label>
+                    <input type="text" id="addFirstName" required><br>
+
+                    <label for="addLastName">Last Name:</label>
+                    <input type="text" id="addLastName" required><br>
+
+                    <label for="addEmail">Email:</label>
+                    <input type="text" id="addEmail" required><br>
+
+                    <label for="addJobId">Job ID:</label>
+                    <select id="addJobId" required>
+                        <option value="AC_ACCOUNT">AC_ACCOUNT</option>
+                        <option value="AC_MGR">AC_MGR</option>
+                        <option value="FI_ACCOUNT">FI_ACCOUNT</option>
+                        <option value="HR_REP">HR_REP</option>
+                        <option value="IT_PROG">IT_PROG</option>
+                        <option value="MK_MAN">MK_MAN</option>
+                        <!-- Add more job options here -->
+                        >
+                    </select><br>
+
+                    <label for="addCommissionPct">Commission Percentage (0 to 1):</label>
+                    <input type="number" id="addCommissionPct" step="0.01" min="0" max="1" required><br>
+
+                    <label for="addDepartmentId">Department ID:</label>
+                    <input type="number" id="addDepartmentId"><br>
+
+                    <button type="submit">Add Employee</button>
+                </form>
+
+                <div class="search-section">
+                    <h2>Search Employee</h2>
+
+                    <!-- Search by First Name -->
+                    <div>
+                        <label for="searchByFirstName">Search by First Name: </label>
+                        <input type="text" id="searchByFirstName" placeholder="Enter First Name" />
+                        <button id="searchEmployeeByFirstNameBtn">Search</button>
+                    </div>
+
+                    <!-- Search by Email -->
+                    <div>
+                        <label for="searchByEmail">Search by Email: </label>
+                        <input type="text" id="searchByEmail" placeholder="Enter Email" />
+                        <button id="searchEmployeeByEmailBtn">Search</button>
+                    </div>
+
+                    <!-- Search by Phone Number -->
+                    <div>
+                        <label for="searchByPhone">Search by Phone Number: </label>
+                        <input type="text" id="searchByPhone" placeholder="Enter Phone Number" />
+                        <button id="searchEmployeeByPhoneBtn">Search</button>
+                    </div>
+                </div>
+
+
+                <!-- Error message section -->
+                <div id="errorMessages">
+                    <ul></ul>
+                </div>
+
+                <!-- Employee details section -->
+                <div id="employeeDetails">
+                    <h3>Employee Details</h3>
+                    <p><strong>Employee ID:</strong> <span id="employeeId"></span></p>
+                    <p><strong>First Name:</strong> <span id="firstName"></span></p>
+                    <p><strong>Last Name:</strong> <span id="lastName"></span></p>
+                    <p><strong>Email:</strong> <span id="email"></span></p>
+                    <p><strong>Phone Number:</strong> <span id="phoneNumber"></span></p>
+                    <p><strong>Hire Date:</strong> <span id="hireDate"></span></p>
+                    <p><strong>Job ID:</strong> <span id="jobId"></span></p>
+                    <p><strong>Salary:</strong> $<span id="salary"></span></p>
+                    <p><strong>Manager ID:</strong> <span id="managerId"></span></p>
+                    <p><strong>Department ID:</strong> <span id="departmentId"></span></p>
+                </div>
+                <h1>List of Managers</h1>
+
+                <!-- Error message container -->
+                <div id="errorMessages" class="error-message" style="display:none;">
+                    <ul></ul>
+                </div>
+
+                <!-- Table to display manager details -->
+                <table id="managerTable">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Job ID</th>
+                            <th>Department ID</th>
+                            <th>Commission Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Manager details will be inserted dynamically here -->
+                    </tbody>
+                </table>
+
+                <!-- Button to load manager details -->
+                <button id="loadManagersBtn">Load Manager Details</button>
+
+
+                <h2>Employees by Department</h2>
+
+
+                <div>
+                    <h3>Get Employees by Department</h3>
+                    <input type="number" id="departmentIdInput" placeholder="Department ID" />
+                    <button id="getEmployeesByDepartmentButton">Fetch Employees</button>
+                    <div id="errorMessages" style="display:none;">
+                        <ul></ul>
+                    </div>
+
+                    <table id="employeeTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Job ID</th>
+                                <th>Department ID</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Employee data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <h3>Employees Without Commission</h3>
+                    <button id="getEmployeesWithoutCommissionButton">Fetch Employees Without Commission</button>
+                    <div id="errorMessages" style="display:none;">
+                        <ul></ul>
+                    </div>
+
+                    <!-- New Table to Display Employees Without Commission -->
+                    <table id="employeesWithoutCommissionTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Job ID</th>
+                                <th>Department ID</th>
+                                <th>Salary</th>
+                                <th>Commission Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Employee data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div>
+                    <h3>Get Total Commission Issued to Employee by Department</h3>
+
+                    <!-- Dropdown to select Department ID -->
+                    <select id="departmentIdSelect">
+                        <option value="">Select Department</option>
+                        <!-- Department options will be populated here -->
+                    </select>
+
+                    <!-- Button to fetch the total commission -->
+                    <button id="getTotalCommissionButton">Fetch Total Commission</button>
+
+                    <!-- Error Messages -->
+                    <div id="errorMessages" style="display:none;">
+                        <ul></ul>
+                    </div>
+
+                    <!-- Result for Total Commission -->
+                    <div id="commissionResult" style="display:none;">
+                        <p>Total Commission Issued to Department: <span id="totalCommissionValue">0</span></p>
+                    </div>
+                </div>
+
+
+
+                <div>
+                    <h3>Find Max Salary for Employee</h3>
+                    <!-- Input field for Employee ID -->
+                    <input type="number" id="MaxemployeeId" placeholder="Employee ID" />
+                    <!-- Button to trigger the request -->
+                    <button id="findMaxSalaryButton">Find Max Salary</button>
+                    <!-- Container to show the result -->
+                    <div id="resultContainer"></div>
+                </div>
+
+
+
+                <!-- Update Employee Email Form -->
+                <h2>Update Employee Email</h2>
+                <form id="updateEmailForm">
+                    <label for="currentemail">Current Email:</label>
+                    <!-- Allow only capital letters and prevent "@" symbol -->
+                    <input type="text" id="currentemail" name="currentemail" placeholder="Enter current email (CAPITALIZED)" required
+                           oninput="this.value = this.value.toUpperCase().replace(/@/, '')">
+                    <br><br>
+
+                    <label for="newemail">New Email:</label>
+                    <!-- Allow only capital letters and prevent "@" symbol -->
+                    <input type="text" id="newemail" name="newemail" placeholder="Enter new email (CAPITALIZED)" required
+                           oninput="this.value = this.value.toUpperCase().replace(/@/, '')">
+                    <br><br>
+
+                    <button type="submit">Update Email</button>
+                </form>
+
+                <div id="response"></div>  <!-- This will display the result of the API request -->
+                <!-- Assign Manager Form -->
+                <h2>Assign Manager</h2>
+                <form id="assignManagerForm">
+                    <input type="number" id="AssignemployeeId" placeholder="Employee ID" required>
+                    <input type="number" id="AssignmanagerId" placeholder="Manager ID" required>
+                    <button type="submit">Assign Manager</button>
+                </form>
+                <div id="AssignresultContainer"></div>
+
+
+                <h2>Modify Employee</h2>
+                <form id="modifyEmployeeForm">
+                    <label for="modemployeeId">Employee ID:</label><br>
+                    <input type="number" id="modemployeeId" name="employeeId" required><br><br>
+
+                    <label for="modfirstName">First Name:</label><br>
+                    <input type="text" id="modfirstName" name="firstName" required><br><br>
+
+                    <label for="modlastName">Last Name:</label><br>
+                    <input type="text" id="modlastName" name="lastName" required><br><br>
+
+                    <label for="modemail">Email (Capital Letters Only):</label><br>
+                    <input type="text" id="modemail" name="email" required><br><br>
+
+                    <label for="modjobId">Job ID:</label><br>
+                    <select id="modjobId" name="jobId" required>
+                        <option value="AC_ACCOUNT">AC_ACCOUNT</option>
+                        <option value="AC_MGR">AC_MGR</option>
+                        <option value="AD_ASST">AD_ASST</option>
+                        <option value="AD_PRES">AD_PRES</option>
+                        <option value="AD_VP">AD_VP</option>
+                        <option value="FI_ACCOUNT">FI_ACCOUNT</option>
+                        <option value="FI_MGR">FI_MGR</option>
+                        <option value="HR_REP">HR_REP</option>
+                        <option value="IT_PROG">IT_PROG</option>
+                        <option value="MK_MAN">MK_MAN</option>
+                        <option value="MK_REP">MK_REP</option>
+                        <option value="PR_REP">PR_REP</option>
+                        <option value="PU_CLERK">PU_CLERK</option>
+                        <option value="PU_MAN">PU_MAN</option>
+                        <option value="SA_MAN">SA_MAN</option>
+                        <option value="SA_REP">SA_REP</option>
+                        <option value="SH_CLERK">SH_CLERK</option>
+                        <option value="ST_CLERK">ST_CLERK</option>
+                        <option value="ST_MAN">ST_MAN</option>
+                    </select><br><br>
+
+                    <label for="modcommissionPct">Commission Percentage (0 - 1):</label><br>
+                    <input type="number" step="0.01" min="0" max="1" id="modcommissionPct" name="commissionPct" required><br><br>
+
+                    <label for="moddepartmentId">Department ID (10 to 100):</label><br>
+                    <input type="number" id="moddepartmentId" name="departmentId" min="10" max="100" required><br><br>
+
+
+
+                    <button type="submit">Modify Employee</button>
+                </form>
+
+                <div id="modresponse"></div>
+
+                <h2>Assign Department to Employee</h2>
+
+                <!-- Form to assign employee to department -->
+                <form id="assignDepartmentForm">
+                    <label for="assemployeeId">Employee ID:</label>
+                    <input type="number" id="assemployeeId" name="assemployeeId" required>
+                    <br><br>
+
+                    <label for="assdepartmentId">Department ID:</label>
+                    <input type="number" id="assdepartmentId" name="assdepartmentId" required>
+                    <br><br>
+
+                    <button type="submit">Assign Department</button>
+                </form>
+
+                <!-- Div to show the result of the API request -->
+                <div id="assresponse"></div>
+
+                <h2>Update Commission for Sales Department</h2>
+                <!-- Form to update commission percentage -->
+                <form id="updateCommissionForm">
+                    <label for="updepartmentId">Department ID:</label>
+                    <input type="number" id="updepartmentId" name="departmentId" required>
+                    <br><br>
+
+                    <label for="upcommissionPercentage">Commission Percentage (0 to 1):</label>
+                    <input type="number" id="upcommissionPercentage" name="commissionPercentage" step="0.01" min="0" max="1" required>
+                    <br><br>
+
+                    <button type="submit">Update Commission</button>
+                </form>
+
+                <!-- Div to show the result of the API request -->
+                <div id="upresponse"></div>
+
+                <div id="assignJobFormContainer">
+                    <h3>Assign currentJob to newJob</h3>
+                    <form id="assignJobForm">
+
+
+                        <label for="assjobidcurrentJobId">Current Job ID:</label>
+                        <input type="text" id="assjobidcurrentJobId" name="assjobidcurrentJobId" placeholder="Enter Current Job ID" required />
+                        <br />
+
+                        <label for="assjobidnewJobId">New Job ID:</label>
+                        <input type="text" id="assjobidnewJobId" name="assjobidnewJobId" placeholder="Enter New Job ID" required />
+                        <br />
+
+                        <button type="submit">Assign Job</button>
+                    </form>
+
+                    <div id="assjobidresponse"></div> <!-- To show success/error messages -->
+                </div>
+                <h3>Employee Count Grouped by Location</h3>
+
+                <!-- Button to trigger the fetch -->
+                <button id="fetchEmployeeCount">Fetch Employee Count</button>
+
+                <!-- Div to display the results -->
+                <div id="employeeCountResult"></div>
+
+
+                </div>
+
+
+        </section>
+    </main>
+
+    
+
+    <footer>
+        &copy; 2025 Human Resource Management Portal | All Rights Reserved
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const collapsibles = document.querySelectorAll('.collapsible');
+
+            collapsibles.forEach(collapsible => {
+                collapsible.addEventListener('click', function () {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none';
+                    } else {
+                        content.style.display = 'block';
+                    }
+                });
+            });
+        });
+
+
+    </script>
+
+    <script src="../js/Country.js"></script>
+    <script src="../js/jobs.js"></script>
+    <script src="../js/location.js"></script>
+    <script src="../js/region.js"></script>
+    <script src="../js/jobHistory.js"></script>
+    <script src="../js/dept.js"></script>
+    <script src="../js/Employee.js"></script>
+
+
+
+</body>
+</html>

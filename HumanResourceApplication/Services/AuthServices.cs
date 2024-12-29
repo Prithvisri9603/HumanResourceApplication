@@ -38,14 +38,26 @@ namespace HumanResourceApplication.Services
             //var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == username && u.Passwordhash == password);
 
 
+            //         var ruser = _context.Users
+            //.FromSqlInterpolated($@"
+            // SELECT * 
+            //FROM Users
+            //WHERE Username = {username} 
+            //AND Passwordhash= CONVERT(VARCHAR(255), HASHBYTES('SHA2_256', {password}), 2)")
+            //.Include(u => u.Role)
+            //.FirstOrDefault();
+
             var ruser = _context.Users
-   .FromSqlInterpolated($@"
-    SELECT * 
-   FROM Users
-   WHERE Username = {username} 
-   AND Passwordhash= CONVERT(VARCHAR(255), HASHBYTES('SHA2_256', {password}), 2)")
-   .Include(u => u.Role)
-   .FirstOrDefault();
+    .FromSqlInterpolated($@"
+        EXEC GetUserByUsernameAndPassword @Username = {username}, @Password = {password}")
+    .AsEnumerable()
+    .FirstOrDefault();
+
+            if(ruser!=null)
+            {
+                ruser.Role = _context.Roles.FirstOrDefault(r => r.Id == ruser.RoleId);
+            }
+
 
             if (ruser == null) return null;
 
