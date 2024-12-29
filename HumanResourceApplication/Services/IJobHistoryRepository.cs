@@ -8,6 +8,7 @@ namespace HumanResourceApplication.Services
         Task<TimeSpan?> FindExperienceOfEmployees(decimal id);
 
         Task<List<JobHistoryDTO>> GetAllJobHistory();
+        Task<JobHistoryDTO> GetJobHistoryByEmployeeIdAndJob(decimal empid, string jobId);
 
         //Task<List<JobHistoryDTO>> EmployeesWithLessThanOneYearExp(decimal id);
 

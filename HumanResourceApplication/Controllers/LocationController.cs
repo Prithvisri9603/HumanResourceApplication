@@ -5,6 +5,8 @@ using HumanResourceApplication.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HumanResourceApplication.Utility;
+using System.ComponentModel.DataAnnotations;
 
 namespace HumanResourceApplication.Controllers
 {
@@ -90,7 +92,7 @@ namespace HumanResourceApplication.Controllers
 
         public async Task<IActionResult> AddLocation(LocationDTO locationDto)
         {
-            try
+            /*try
             {
                 var validationResult = _validator.Validate(locationDto);
                 if (!validationResult.IsValid)
@@ -103,6 +105,37 @@ namespace HumanResourceApplication.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }*/
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                var existingLocation = await _locationRepository.GetLocationById(locationDto.LocationId);
+                if (existingLocation != null)
+                {
+                    throw new AlreadyExistsException($"Location already exists.");
+                }
+                var validationResult = _validator.Validate(locationDto);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    throw new CustomeValidationException(errors, timeStamp);
+                }
+                await _locationRepository.AddLocation(locationDto);
+                return Ok(new
+                {
+                    //TimeStamp = timeStamp,
+                    Message = "Record Created Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                // Return error response with timestamp
+                return BadRequest(new
+                {
+                    //Code = 400,
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
             }
         }
         #endregion
@@ -124,7 +157,7 @@ namespace HumanResourceApplication.Controllers
         [HttpPut("id")]
         public async Task<IActionResult> UpdateLocation(int id, LocationDTO locationDto)
         {
-            try
+            /*try
             {
                 var validationResult = _validator.Validate(locationDto);
                 if (!validationResult.IsValid)
@@ -143,6 +176,37 @@ namespace HumanResourceApplication.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
+            }*/
+
+            try
+            {
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"); 
+                var validationResult = _validator.Validate(locationDto);
+                if (!validationResult.IsValid)
+                {
+                    throw new CustomeValidationException(validationResult.Errors.Select(e => e.ErrorMessage).ToList(), timeStamp);
+                }
+                var existingLocation = await _locationRepository.GetLocationById(id);
+                if (existingLocation == null)
+                {
+                    throw new AlreadyExistsException("Location not found.");
+                }
+                await _locationRepository.UpdateLocation(id, locationDto);
+
+                return Ok(new
+                {
+                    //Code = 200,
+                    //TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = "Record Modified Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    Message = ex.Message
+                });
             }
         }
         #endregion

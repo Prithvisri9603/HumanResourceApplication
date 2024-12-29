@@ -17,37 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 
-// Register the DbContext with a connection string
-builder.Services.AddDbContext<HrContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Create AutoMapper configuration and register it
-var mapperConfig = new MapperConfiguration(mc =>
-{
-    mc.AddProfile(new MappingProfile());
-});
-
-IMapper mapper = mapperConfig.CreateMapper();
-builder.Services.AddSingleton(mapper);
-
-// Register repositories
-builder.Services.AddScoped<IEmployeeRepo, EmployeeService>();
-builder.Services.AddScoped<ICountryRepository, CountryService>();
-builder.Services.AddScoped<IJobRepository, JobServices>();
-builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
-builder.Services.AddScoped<ILocationRepository, LocationServices>();
-builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
-builder.Services.AddScoped<IRegionRepository, RegionServices>();
-builder.Services.AddScoped<IAuthServices, AuthServices>();
-// Configure FluentValidation
-builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
-builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
-builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
-builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<DepartmentDTOValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<RegionDTOValidator>();
-
 
 // Adding Authentication
 
@@ -74,10 +43,52 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization();
+
 
 builder.Services.AddAuthorization();
 
-// Swagger configuration
+
+
+// Register the DbContext with a connection string
+builder.Services.AddDbContext<HrContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+//create mapper configuration and passing it to the profile
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+//create IMapper instance and pass the mapperconfig to it 
+IMapper mapper = mapperConfig.CreateMapper();
+
+//register the mapper instance to the service container
+builder.Services.AddSingleton(mapper);
+
+// Register repositories
+builder.Services.AddScoped<IEmployeeRepo, EmployeeService>();
+builder.Services.AddScoped<ICountryRepository, CountryService>();
+builder.Services.AddScoped<IJobRepository, JobServices>();
+builder.Services.AddScoped<IJobHistoryRepository, JobHistoryServices>();
+builder.Services.AddScoped<ILocationRepository, LocationServices>();
+builder.Services.AddScoped<IDepartmentRepository, DeptServices>();
+builder.Services.AddScoped<IRegionRepository, RegionServices>();
+builder.Services.AddScoped<IAuthServices, AuthServices>();
+
+//builder.Services.AddScoped<ICountryRepository, CountryService>();
+//builder.Services.AddScoped<IRegionRepository, RegionServices>();
+
+// Configure FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<CountryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<JobDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<JobHistoryDTO>();
+builder.Services.AddValidatorsFromAssemblyContaining<LocationDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<DepartmentDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<RegionDTOValidator>();
+
+
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
@@ -107,7 +118,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 
 var app = builder.Build();
 
