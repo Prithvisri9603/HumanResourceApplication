@@ -109,28 +109,38 @@ namespace Testing
 
 
 
+
         [Fact]
         public async Task AddRegion_ReturnsBadRequest_WhenValidationFails()
         {
             // Arrange
-            var region = new RegionDTO { RegionId = 0, RegionName = "Europe" }; // Invalid RegionId and RegionName
+            var region = new RegionDTO { RegionId = 0, RegionName = "Europe" }; // Invalid RegionId
+
+            // Create validation failures to simulate a failed validation
             var validationFailures = new List<ValidationFailure>
-            {
-                new ValidationFailure("RegionId", "Region Id is required.")
-            };
+    {
+        new ValidationFailure("RegionId", "Region Id is required.")
+    };
 
+            var validationResult = new FluentValidation.Results.ValidationResult(validationFailures);
+
+            // Mock the validator to return the validation result
             _mockValidator.Setup(v => v.ValidateAsync(region, default))
-                          .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-
+                          .ReturnsAsync(validationResult);
 
             // Act
             var result = await _controller.AddNewRegion(region);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Validation failed", badRequestResult.Value); // Assert for validation failure message
+            var errors = Assert.IsType<List<ValidationFailure>>(badRequestResult.Value);
+
+            Assert.NotEmpty(errors);
+            Assert.Contains(errors, e => e.ErrorMessage == "Region Id is required.");
         }
+
+
+
 
 
 

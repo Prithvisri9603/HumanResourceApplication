@@ -6,7 +6,7 @@ using HumanResourceApplication.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using HumanResourceApplication.Utility;
+//using HumanResourceApplication.Utility;
 using System.ComponentModel.DataAnnotations;
 
 namespace HumanResourceApplication.Controllers

@@ -18,7 +18,6 @@
             return;
         }
         $.ajax({
-<<<<<<< HEAD
             url: '/api/Job', // API endpoint for all jobs
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
@@ -47,23 +46,12 @@
                 </table>
             `;
                 $('#jobList').html(table);
-=======
-            url: '/api/Job',
-            type: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` },
-            success: function (data) {
-                let list = data.map(job => `<li>${job.jobTitle} (Salary: ${job.minSalary}-${job.maxSalary})</li>`).join('');
-                $('#jobList').html(list || '<li>No jobs available</li>');
->>>>>>> origin/master
             },
             error: handleError,
         });
     });
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
     // Fetch job by ID
     $('#getJobById').click(function () {
         const jobId = $('#jobIdInput').val();
@@ -76,7 +64,6 @@
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
-<<<<<<< HEAD
                 $('#jobDetails').html(`
                     <table>
                         <thead>
@@ -97,18 +84,12 @@
                         </tbody>
                     </table>
                 `);
-=======
-                $('#jobDetails').html(`<p>${data.jobTitle} (Salary: ${data.minSalary}-${data.maxSalary})</p>`);
->>>>>>> origin/master
             },
             error: handleError,
         });
     });
 
-<<<<<<< HEAD
-  
-=======
->>>>>>> origin/master
+
 
     // Add a new job
     $('#addJob').click(function () {
@@ -127,10 +108,7 @@
             success: function () {
                 alert('Job added successfully');
                 $('#newJobId, #newJobTitle, #newMinSalary, #newMaxSalary').val('');
-<<<<<<< HEAD
-              
-=======
->>>>>>> origin/master
+
             },
             error: handleError,
         });
@@ -158,10 +136,7 @@
         });
     });
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
     // Update job salary
     $('#updateJobSalary').click(function () {
         const jobId = $('#updateSalaryJobId').val();
@@ -174,10 +149,7 @@
             success: function () {
                 alert('Job salary updated successfully');
                 $('#updateSalaryJobId, #updateNewMinSalary, #updateNewMaxSalary').val('');
-<<<<<<< HEAD
                 $('#getJobs').click(); // Refresh job list
-=======
->>>>>>> origin/master
             },
             error: handleError,
         });
