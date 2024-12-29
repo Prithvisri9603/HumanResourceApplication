@@ -1,4 +1,5 @@
-﻿using HumanResourceApplication.DTO;
+﻿using FluentValidation;
+using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
 using HumanResourceApplication.Validators;
@@ -12,8 +13,8 @@ namespace HumanResourceApplication.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRepo _employeeRepo;
-        private readonly EmployeeValidator _employeeValidator;
-        public EmployeesController(IEmployeeRepo employeeRepo,EmployeeValidator employeevalidator)
+        private readonly IValidator<EmployeeDTO> _employeeValidator;
+        public EmployeesController(IEmployeeRepo employeeRepo, IValidator<EmployeeDTO> employeevalidator)
         {
             _employeeRepo = employeeRepo;
             _employeeValidator = employeevalidator;
@@ -121,7 +122,7 @@ namespace HumanResourceApplication.Controllers
             try
             {
                 await _employeeRepo.UpdateCommissionForDepartment(departmentId, commissionPercentage);
-                return Ok("Record Created Successfully");
+                return Ok("Record Modified Successfully");
             }
             catch (Exception ex)
             {
@@ -256,11 +257,11 @@ namespace HumanResourceApplication.Controllers
         }
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Update Email")]
-        public async Task<IActionResult> UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
+        public async Task<IActionResult> UpdateEmployeeEmail(string currentemail, string newemail)
         {
             try
             {
-                await _employeeRepo.UpdateEmployeeEmail(email, employeeDto);
+                await _employeeRepo.UpdateEmployeeEmail(currentemail, newemail);
                 return Ok("Record Modified Successfully");
             }
             catch (Exception ex)

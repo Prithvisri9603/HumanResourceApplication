@@ -2,6 +2,7 @@
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,20 +16,20 @@ namespace HumanResourceApplication.Controllers
     {
         private readonly IRegionRepository _regionRepository;
         private readonly IValidator<RegionDTO> _regionValidator;
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
 
-        public RegionController(IRegionRepository regionRepository, IValidator<RegionDTO> regionValidator, IConfiguration configuration)
+        public RegionController(IRegionRepository regionRepository, IValidator<RegionDTO> regionValidator)
         {
             _regionRepository = regionRepository;
             _regionValidator = regionValidator;
-            _configuration = configuration;
+            //_configuration = configuration;
         }
         #region AddNewRegion
         [Authorize(Roles = "Admin")]
         [HttpPost("AddRegion")]
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
         {
-            var validationResult = _regionValidator.Validate(region);
+            var validationResult = await _regionValidator.ValidateAsync(region);
             if (!validationResult.IsValid)
             {
                 return BadRequest("Validation failed");
@@ -48,6 +49,25 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { Message = "An error occurred." });
             }
         }
+
+        //public async Task<IActionResult> AddNewRegion(RegionDTO region)
+        //{
+        //    try
+        //    {
+        //        var validationResult = await _regionValidator.ValidateAsync(region);
+        //        if (!validationResult.IsValid)
+        //        {
+        //            return BadRequest(validationResult.Errors);
+        //        }
+        //        await _regionRepository.AddNewRegion(region);
+        //        return Ok("Record created successfully");
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return BadRequest(new { Message = "An error occurred." });
+        //    }
+        //}
+
         #endregion
 
         #region UpdateRegion
@@ -58,7 +78,7 @@ namespace HumanResourceApplication.Controllers
 
             try
             {
-                var validationResult = _regionValidator.Validate(regiondto);
+                var validationResult =await  _regionValidator.ValidateAsync(regiondto);
 
                 // If validation fails, return BadRequest with the validation errors
                 if (!validationResult.IsValid)
@@ -79,12 +99,18 @@ namespace HumanResourceApplication.Controllers
         #region ListAllRegion
         [Authorize(Roles = "Admin, HR Team, Employee")]
         [HttpGet("GetAllRegion")]
-
+        //did changes here
         public async Task<IActionResult> ListAllRegion()
         {
             try
             {
                 List<RegionDTO> regionlist = await _regionRepository.ListAllRegion();
+
+                if (regionlist == null || !regionlist.Any())
+                {
+                    return NotFound(new { Message = "No regions found." });
+                }
+
                 return Ok(regionlist);
             }
             catch (Exception)
@@ -92,6 +118,7 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { Message = "An error occurred." });
             }
         }
+
         #endregion
 
         #region GetRegionById
@@ -104,14 +131,14 @@ namespace HumanResourceApplication.Controllers
                 var regionid = await _regionRepository.GetRegionById(region_Id);
                 if (regionid == null)
                 {
-                    return NotFound("Id does not exsits");
+                    return NotFound(new { message = "Region not found." });
                 }
                 return Ok(regionid);
 
             }
             catch(Exception)
             {
-                return Ok(new { Message = "An error occurred." });
+                return BadRequest("An error occurred.");
             }
         }
         #endregion
@@ -123,29 +150,31 @@ namespace HumanResourceApplication.Controllers
         {
             try
             {
-                var region = await _regionRepository.GetRegionById(region_id);
+                //var region = await _regionRepository.GetRegionById(region_id);
 
                 // If the region doesn't exist, return NotFound response
-                if (region == null)
-                {
-                    return NotFound(new { message = "Region not found" });
-                }
+                //if (region == null)
+                //{
+                //    return NotFound(new { message = "Region not found" });
+                //}
 
                 // If the region exists, delete it
                 await _regionRepository.DeleteRegionById(region_id);
 
                 // Return success response
-                return Ok(new { message = "Region deleted successfully" });
+                //return Ok(new { message = "Region deleted successfully" });
+                return Ok("Region deleted successfully");
             }
         
              catch (Exception)
                 {
         
-                return Ok(new { Message = "An error occurred." });
+                return BadRequest("Error deleting");
               }
              }
-           
-        }
+
+        
+    }
     #endregion
 
 

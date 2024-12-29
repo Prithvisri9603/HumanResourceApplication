@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job and Country Lists</title>
+    <script>
+        // Clear token only on full reload, not on navigation
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+            localStorage.removeItem('jwtToken');
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Job Operations</h1>
+
+    <div>
+        <!-- Fetch all jobs -->
+        <button id="getJobs">Fetch All Jobs</button>
+        <ul id="jobList"></ul>
+
+        <!-- Fetch job by ID -->
+        <input type="text" id="jobIdInput" placeholder="Enter Job ID" />
+        <button id="getJobById">Fetch Job By ID</button>
+        <div id="jobDetails"></div>
+
+        <!-- Add a new job -->
+        <h3>Add Job</h3>
+        <input type="text" id="newJobId" placeholder="Job Id" />
+        <input type="text" id="newJobTitle" placeholder="Job Title" />
+        <input type="number" id="newMinSalary" placeholder="Min Salary" />
+        <input type="number" id="newMaxSalary" placeholder="Max Salary" />
+        <button id="addJob">Add Job</button>
+
+        <!-- Update job -->
+        <h3>Update Job</h3>
+        <input type="text" id="updateJobId" placeholder="Job ID to Update" />
+        <input type="text" id="updateJobTitle" placeholder="New Job Title" />
+        <input type="number" id="updateMinSalary" placeholder="New Min Salary" />
+        <input type="number" id="updateMaxSalary" placeholder="New Max Salary" />
+        <button id="updateJob">Update Job</button>
+
+        <!-- Update min/max salary -->
+        <h3>Update Job Salary</h3>
+        <input type="text" id="updateSalaryJobId" placeholder="Job ID" />
+        <input type="number" id="updateNewMinSalary" placeholder="New Min Salary" />
+        <input type="number" id="updateNewMaxSalary" placeholder="New Max Salary" />
+        <button id="updateJobSalary">Update Salary</button>
+
+    </div>
+
+    <h1>Country Operations</h1>
+
+    <!-- Fetch all countries -->
+    <div>
+        <h3>Get All Countries</h3>
+        <button id="getAllCountries">Fetch All Countries</button>
+        <ul id="countryList"></ul>
+    </div>
+    <!-- Fetch Country by ID -->
+
+    <h3>Fetch Country by ID</h3>
+    <input type="text" id="countryIdInput" placeholder="Enter Country ID" />
+    <button id="getCountryById">Fetch Country</button>
+    <div id="countryDetails"></div>
+
+
+    <!-- Add a new country -->
+    <div>
+        <h3>Add Country</h3>
+        <input type="text" id="newCountryId" placeholder="Country ID">
+        <input type="text" id="newCountryName" placeholder="Country Name">
+        <input type="text" id="newRegionId" placeholder="Region ID">
+        <button id="addCountry">Add Country</button>
+    </div>
+
+    <!-- Update Country-->
+    <div>
+        <h3>Update Country</h3>
+        <input type="text" id="updateCountryId" placeholder="Country ID">
+        <input type="text" id="updateCountryName" placeholder="New Country Name">
+        <input type="text" id="updateCountryCode" placeholder="New Region ID">
+        <button id="updateCountry">Update Country</button>
+    </div>
+
+    <div>
+        <h3>Delete Country</h3>
+        <input type="text" id="deleteCountryId" placeholder="Country ID">
+        <button id="deleteCountry">Delete Country</button>
+    </div>
+
+    <!-- Operations Locations-->
+    <h1> Location operations </h1>
+    <h3>Get All Locations</h3>
+    <button id="getLocations">Fetch all locations</button>
+    <ul id="locationList"></ul>
+
+    <!-- Add Locations-->
+    <div>
+        <h3>Add Location</h3>
+        <input type="text" id="newLocationId" placeholder="Location ID">
+        <input type="text" id="newStreetAddress" placeholder="Street Address">
+        <input type="text" id="newPostalCode" placeholder="Postal code">
+        <input type="text" id="newCity" placeholder="City">
+        <input type="text" id="newStateProvince" placeholder="State Province">
+        <input type="text" id="newCountryId" placeholder="Country ID" maxlength="2" style="text-transform: uppercase;" />
+        <button id="addLocation">Add Location</button>
+    </div>
+
+    <!-- Update Location-->
+    <div>
+        <h3>Add Location</h3>
+        <input type="text" id="updateLocationId" placeholder="Location ID">
+        <input type="text" id="updateStreetAddress" placeholder="Street Address">
+        <input type="text" id="updatePostalCode" placeholder="Postal code">
+        <input type="text" id="updateCity" placeholder="City">
+        <input type="text" id="updateStateProvince" placeholder="State Province">
+        <input type="text" id="updateCountryId" />
+
+        <button id="updateLocation">Update Location</button>
+    </div>
+
+    <!--Region Operations-->>
+    <h1>Region Operations</h1>
+
+    <!-- Fetch all countries -->
+    <h3>Get All Regions</h3>
+    <button id="getAllRegions">Fetch All Regions</button>
+    <ul id="regionList"></ul>
+
+    <div>
+        <h3>Get Region by ID</h3>
+        <input type="text" id="regionIdInput" placeholder="Enter Region ID">
+        <button id="getRegionById">Get Region</button>
+        <div id="regionDetail"></div> <!-- Placeholder for displaying region details -->
+    </div>
+
+    <div>
+        <h3>Add Region</h3>
+        <input type="text" id="AddregionIdInput" placeholder="Region ID">
+        <input type="text" id="regionNameInput" placeholder="Region Name">
+        <button id="addRegion">Add Region</button>
+    </div>
+
+
+
+
+
+
+    <!-- Include the jobs.js script -->
+    <script src="../js/jobs.js"></script>
+    <script src="../js/Country.js"></script>
+    <script src="../js/jobs.js"></script>
+    <script src="../js/locations.js"></script>
+
+
+</body>
+</html>

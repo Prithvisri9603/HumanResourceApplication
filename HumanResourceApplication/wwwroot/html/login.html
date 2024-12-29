@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="loginForm">
+        <div>
+            <label for="username">Username: </label>
+            <input type="text" id="username" required />
+        </div>
+        <div>
+            <label for="password">Password: </label>
+            <input type="password" id="password" required />
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Error message display -->
+    <div id="errorMessage" style="color: red; display: none;"></div>
+
+    <script>
+        $(document).ready(function () {
+            $('#loginForm').submit(function (event) {
+                event.preventDefault();
+
+                const loginData = {
+                    username: $('#username').val(),
+                    password: $('#password').val(),
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7193/api/Auth/Login', 
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(loginData), 
+                    success: function (token) {
+                        alert('Login successful!');
+                        localStorage.setItem('jwtToken', token); // Store token in localStorage
+                        window.location.href = '/html/index.html'; // Redirect to index.html
+                    },
+                    error: function (xhr) {
+                        let errorMessage = 'An error occurred. Please try again.';
+                        if (xhr.responseText) {
+                            errorMessage = xhr.responseText; // Show server error message if available
+                        }
+                        $('#errorMessage').text(errorMessage).show(); // Display the error
+                    },
+                });
+            });
+        });
+    </script>
+</body>
+</html>

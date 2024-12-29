@@ -63,7 +63,7 @@ namespace HumanResourceApplication.Controllers
             }
         }
         #endregion
-
+        
         #region Add job
         //Add Job 
 

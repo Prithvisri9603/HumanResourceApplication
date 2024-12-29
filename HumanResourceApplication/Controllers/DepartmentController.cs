@@ -16,13 +16,13 @@ namespace HumanResourceApplication.Controllers
     {
         private readonly IDepartmentRepository _departmentrepository;
         private readonly IValidator<DepartmentDTO> _departmentValidator;
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
 
-        public DepartmentController(IDepartmentRepository departmentrepository, IValidator<DepartmentDTO> departmentValidator, IConfiguration configuration)
+        public DepartmentController(IDepartmentRepository departmentrepository, IValidator<DepartmentDTO> departmentValidator)
         {
             _departmentrepository = departmentrepository;
             _departmentValidator = departmentValidator;
-            _configuration = configuration;
+            //_configuration = configuration;
         }
         #region AddDepartment
         [Authorize(Roles = "Admin")]

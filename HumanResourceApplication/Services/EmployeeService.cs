@@ -219,17 +219,19 @@ namespace HumanResourceApplication.Services
             return (job.JobTitle, job.MaxSalary??0);
         }
 
-        public async Task UpdateEmployeeEmail(string email, EmployeeDTO employeeDto)
+        public async Task UpdateEmployeeEmail(string currentemail, string newemail)
         {
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == currentemail);
+
             if (employee == null)
             {
-                throw new Exception($"Employee with email {email} not found.");
+                throw new Exception($"No employee found with JobId '{currentemail}'.");
             }
 
-            _mapper.Map(employeeDto, employee);
-            employee.Email = email;
+            
+            employee.Email = newemail;
 
+         
             await _context.SaveChangesAsync();
         }
 

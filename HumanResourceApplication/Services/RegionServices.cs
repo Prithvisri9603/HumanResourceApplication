@@ -82,14 +82,17 @@ namespace HumanResourceApplication.Services
         /// </summary>
         /// <param name="regionId"></param>
         /// <returns></returns>
-        public async Task<Region> GetRegionById(decimal regionId)
+        /// 
+        //did changes here
+        public async Task<RegionDTO> GetRegionById(decimal regionId)
         {
             var regionData = await _hrContext.Regions.FirstOrDefaultAsync(a => a.RegionId == regionId);
-            if(regionData == null)
+            var regionDataDTO = _mapper.Map<RegionDTO>(regionData);
+            if(regionDataDTO == null)
             {
                 return null;
             }
-            return regionData;
+            return regionDataDTO;
         }
 
         #endregion
