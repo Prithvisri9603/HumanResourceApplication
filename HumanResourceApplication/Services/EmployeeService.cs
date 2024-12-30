@@ -47,7 +47,7 @@ namespace HumanResourceApplication.Services
         /// <param name="employeeId">The ID of the employee to modify.</param>
         /// <param name="employee">The updated employee data.</param>
         /// <exception cref="Exception">Thrown if the email address already exists or the employee does not exist.</exception>
-        public async Task ModifyEmployee(int employeeId, EmployeeDTO employee)
+        public async Task ModifyEmployee(decimal employeeId, EmployeeDTO employee)
         {
             var employeedata = await _context.Employees.FindAsync(employeeId);
             if (employeedata != null)

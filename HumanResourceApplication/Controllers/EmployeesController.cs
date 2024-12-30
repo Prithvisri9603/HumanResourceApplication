@@ -96,7 +96,8 @@ namespace HumanResourceApplication.Controllers
                 }
 
                 // Perform the modification
-                await _employeeRepo.ModifyEmployee(employeeId, employee);
+                decimal empId = Convert.ToDecimal(employeeId);
+                await _employeeRepo.ModifyEmployee(empId, employee);
                 return Ok("Record Modified Successfully");
             }
             catch (CustomeValidationException customEx)

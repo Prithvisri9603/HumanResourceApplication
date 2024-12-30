@@ -1,12 +1,14 @@
 ﻿using HumanResourceApplication.DTO;
+using HumanResourceApplication.Models;
 
 namespace HumanResourceApplication.Services
 {
     public interface IEmployeeRepo
     {
         Task AddEmployee(EmployeeDTO employee);
-        Task ModifyEmployee(int  employeeId,EmployeeDTO employee);
+        Task ModifyEmployee(decimal  employeeId,EmployeeDTO employee);
         Task AssignJob(string currentJobId, string newJobId); 
+        
         Task AssignMan(decimal employeeId, decimal managerId);
         Task AssignDep(decimal employeeId, decimal departmentId);
         Task UpdateCommissionForDepartment(decimal departmentId, decimal commissionPercentage);
