@@ -29,13 +29,13 @@ namespace HumanResourceApplication.Services
             bool emailExists = await _context.Employees.AnyAsync(e => e.Email == employee.Email);
             if (emailExists)
             {
-                throw new Exception("Email address already exists");
+                throw new Exception("email address already exists");
             }
             var employees = _mapper.Map<Employee>(employee);
             _context.Employees.Add(employees);
             await _context.SaveChangesAsync();
+            //  return "Record Modified Successfully";
         }
-
         #endregion
 
         #region Modify Employee
@@ -49,22 +49,21 @@ namespace HumanResourceApplication.Services
         /// <exception cref="Exception">Thrown if the email address already exists or the employee does not exist.</exception>
         public async Task ModifyEmployee(decimal employeeId, EmployeeDTO employee)
         {
+
             var employeedata = await _context.Employees.FindAsync(employeeId);
             if (employeedata != null)
             {
                 bool emailExists = await _context.Employees.AnyAsync(e => e.Email == employee.Email);
                 if (emailExists)
                 {
-                    throw new Exception("Email address already exists");
+                    throw new Exception("email address already exists");
                 }
                 _mapper.Map(employee, employeedata);
                 _context.Entry(employeedata).State = EntityState.Modified;
-            }
-            else
-            {
-                throw new Exception($"Employee with ID {employeeId} not found");
+
             }
             await _context.SaveChangesAsync();
+
         }
 
         #endregion
