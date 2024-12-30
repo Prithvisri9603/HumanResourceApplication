@@ -34,7 +34,7 @@ namespace HumanResourceApplication.Controllers
         /// </summary>
         /// <returns>A list of CountryDTO objects or a NotFound response if no countries are found.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("List all the Countries")]
+        [HttpGet]
         public async Task<ActionResult<List<CountryDTO>>> GetAllCountries()
         {
             try
@@ -64,8 +64,8 @@ namespace HumanResourceApplication.Controllers
         /// <returns>A CountryDTO object if found, otherwise a NotFound response.</returns>
 
         [Authorize(Roles = "Admin,HR Team")]
-        [HttpGet("Get country by id")]
-       
+        [HttpGet("id")]
+
         public async Task<ActionResult<CountryDTO>> GetCountryById(string Countryid)
         {
             try
@@ -93,7 +93,7 @@ namespace HumanResourceApplication.Controllers
         /// <param name="country">The CountryDTO object containing the new country data.</param>
         /// <returns>A success message or a BadRequest response if validation fails.</returns>
         [Authorize(Roles = "Admin")]
-        [HttpPost("Add new country")]
+        [HttpPost]
 
         public async Task<IActionResult> AddCountry(CountryDTO country)
         {
@@ -143,7 +143,7 @@ namespace HumanResourceApplication.Controllers
         /// <param name="country">The CountryDTO object containing the updated country data.</param>
         /// <returns>A success message or a BadRequest response if validation fails.</returns>
         [Authorize(Roles = "Admin,HR Team")]
-        [HttpPut("Modify the country")]
+        [HttpPut]
         
         public async Task<IActionResult> UpdateCountry(string Countryid ,CountryDTO country)
         {
@@ -221,7 +221,7 @@ namespace HumanResourceApplication.Controllers
         /// <param name="id">The ID of the country to delete.</param>
         /// <returns>A NoContent response on success, or a BadRequest response on failure.</returns>
         [Authorize(Roles = "Admin,HR Team")]
-        [HttpDelete("Delete country by id")]
+        [HttpDelete("id")]
         public async Task<IActionResult> DeleteCountryById(string id)
         {
             try

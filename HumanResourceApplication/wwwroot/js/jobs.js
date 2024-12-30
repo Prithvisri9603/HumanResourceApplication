@@ -18,16 +18,39 @@
             return;
         }
         $.ajax({
-            url: '/api/Job',
+            url: '/api/Job', // API endpoint for all jobs
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
-                let list = data.map(job => `<li>${job.jobTitle} (Salary: ${job.minSalary}-${job.maxSalary})</li>`).join('');
-                $('#jobList').html(list || '<li>No jobs available</li>');
+                let rows = data.map(job => `
+                <tr>
+                    <td>${job.jobId}</td>
+                    <td>${job.jobTitle}</td>
+                    <td>${job.minSalary}</td>
+                    <td>${job.maxSalary}</td>
+                </tr>
+            `).join('');
+                let table = `
+                <table border="1" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Job Title</th>
+                            <th>Min Salary</th>
+                            <th>Max Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows || '<tr><td colspan="4">No jobs available</td></tr>'}
+                    </tbody>
+                </table>
+            `;
+                $('#jobList').html(table);
             },
             error: handleError,
         });
     });
+
 
     // Fetch job by ID
     $('#getJobById').click(function () {
@@ -41,11 +64,31 @@
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
-                $('#jobDetails').html(`<p>${data.jobTitle} (Salary: ${data.minSalary}-${data.maxSalary})</p>`);
+                $('#jobDetails').html(`
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Job Title</th>
+                                <th>Min Salary</th>
+                                <th>Max Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${data.jobId}</td>
+                                <td>${data.jobTitle}</td>
+                                <td>${data.minSalary}</td>
+                                <td>${data.maxSalary}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `);
             },
             error: handleError,
         });
     });
+
 
 
     // Add a new job
@@ -65,6 +108,7 @@
             success: function () {
                 alert('Job added successfully');
                 $('#newJobId, #newJobTitle, #newMinSalary, #newMaxSalary').val('');
+
             },
             error: handleError,
         });
@@ -92,6 +136,7 @@
         });
     });
 
+
     // Update job salary
     $('#updateJobSalary').click(function () {
         const jobId = $('#updateSalaryJobId').val();
@@ -104,6 +149,7 @@
             success: function () {
                 alert('Job salary updated successfully');
                 $('#updateSalaryJobId, #updateNewMinSalary, #updateNewMaxSalary').val('');
+                $('#getJobs').click(); // Refresh job list
             },
             error: handleError,
         });

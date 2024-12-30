@@ -22,16 +22,34 @@
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
-                let list = data.map(
-                    country => `<li>${country.countryId} ${country.countryName} (Region: ${country.regionId})</li>`
-                ).join('');
-                $('#countryList').html(list || '<li>No country available</li>');
+                let rows = data.map(country => `
+                <tr>
+                    <td>${country.countryId}</td>
+                    <td>${country.countryName}</td>
+                    <td>${country.regionId}</td>
+                </tr>
+            `).join('');
+                let table = `
+                <table border="1" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Country ID</th>
+                            <th>Country Name</th>
+                            <th>Region ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows || '<tr><td colspan="3">No countries available</td></tr>'}
+                    </tbody>
+                </table>
+            `;
+                $('#countryList').html(table);
             },
             error: handleError,
         });
     });
 
-    
+
     // Fetch country by ID
     $('#getCountryById').click(function () {
         const countryId = $('#countryIdInput').val(); // Get the input value
@@ -44,7 +62,27 @@
             type: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             success: function (data) {
-                $('#countryDetails').html(`<p>Country Name: ${data.countryName}</p>`);
+
+                $('#countryDetails').html(`
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country ID</th>
+                                <th>Country Name</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                             <td>${data.countryId}</td>
+                                <td>${data.countryName}</td>
+                               
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+                `);
+                //$('#countryDetails').html(`<p>Country Name: ${data.countryName}</p>`);
             },
             error: function (xhr) {
                 console.error(xhr);
@@ -56,6 +94,8 @@
             }
         });
     });
+
+
 
     $('#addCountry').click(function () {
         const newCountry = {
