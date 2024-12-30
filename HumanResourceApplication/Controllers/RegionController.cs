@@ -29,11 +29,7 @@ namespace HumanResourceApplication.Controllers
         [HttpPost("AddRegion")]
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
         {
-<<<<<<< HEAD
             var validationResult = await _regionValidator.ValidateAsync(region);
-=======
-            /*var validationResult = _regionValidator.Validate(region);
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
             if (!validationResult.IsValid)
             {
                 return BadRequest("Validation failed");
@@ -51,7 +47,7 @@ namespace HumanResourceApplication.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "An error occurred." });
-            }*/
+            }
             
             try
             {

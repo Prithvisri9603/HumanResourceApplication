@@ -463,14 +463,12 @@ namespace HumanResourceApplication.Controllers
         {
             try
             {
-<<<<<<< HEAD
-=======
+
                 var existingName = await _employeeRepo.FindByEmail(newemail);
                 if(existingName != null)
                 {
                     throw new AlreadyExistsException("New email already exists");
                 }
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
                 await _employeeRepo.UpdateEmployeeEmail(currentemail, newemail);
                 return Ok("Record Modified Successfully");
             }
