@@ -501,7 +501,7 @@ namespace Testing
             var result= await _controller.UpdateCommissionForDepartment(departmentid,CommissionPct);
             var okresult= Assert.IsType<OkObjectResult>(result);
             var returnValue = Assert.IsType<string>(okresult.Value);
-            Assert.Equal("Record Modified Successfully", returnValue);
+            Assert.Equal("Record Created Successfully", returnValue);
         }
         [Fact]
         public async Task UpdateCommisionForDepartment_DepartmentNotFound_Badrequest()

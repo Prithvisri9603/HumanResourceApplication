@@ -168,42 +168,28 @@ namespace HumanResourceApplication.Controllers
 
         public async Task<IActionResult> AddJobHistory(decimal empid, DateOnly startDate, string jobId, decimal deptId)
         {
+            // Create a JobHistoryRequest instance
+            var request = new JobHistoryDTO
+            {
+                EmployeeId = empid,
+                StartDate = startDate,
+                JobId = jobId,
+                DepartmentId = deptId
+            };
+
+            // Validate using FluentValidation
+            var validator = new JobHistoryDTOValidator();
+            var validationResult = await _validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             try
             {
-                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-
-                // Create a JobHistoryRequest instance
-                var request = new JobHistoryDTO
-                {
-                    EmployeeId = empid,
-                    StartDate = startDate,
-                    JobId = jobId,
-                    DepartmentId = deptId
-                };
-
-                // Check if the job history already exists
-                var existingJobHistory = await _repository.GetJobHistoryByEmployeeIdAndJob(empid, jobId);
-                if (existingJobHistory != null)
-                {
-                    throw new AlreadyExistsException($"Job history for employee {empid} and job {jobId} already exists.");
-                }
-
-                // Validate the JobHistoryDTO using FluentValidation
-                var validationResult = await _validator.ValidateAsync(request);
-                if (!validationResult.IsValid)
-                {
-                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    throw new CustomeValidationException(errors, timeStamp);
-                }
-
-                // Add JobHistory to the repository
                 await _repository.AddJobHistory(empid, startDate, jobId, deptId);
-
-                // Return successful response
-                return Ok(new
-                {
-                    Message = "Record Created Successfully"
-                });
+                return Ok("Record Created Successfully");
             }
             catch (Exception ex)
             {

@@ -13,8 +13,8 @@ namespace HumanResourceApplication.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRepo _employeeRepo;
-        private readonly EmployeeValidator _employeeValidator;
-        public EmployeesController(IEmployeeRepo employeeRepo, EmployeeValidator employeevalidator)
+        private readonly IValidator<EmployeeDTO> _employeeValidator;
+        public EmployeesController(IEmployeeRepo employeeRepo, IValidator<EmployeeDTO> employeevalidator)
         {
             _employeeRepo = employeeRepo;
             _employeeValidator = employeevalidator;
