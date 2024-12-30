@@ -49,42 +49,42 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { Message = "An error occurred." });
             }
             
-            try
-            {
-                // Capture the current timestamp in UTC ISO 8601 format
-                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            //try
+            //{
+            //    // Capture the current timestamp in UTC ISO 8601 format
+            //    var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-                // Validate the region DTO
-                var validationResult = _regionValidator.Validate(region);
+            //    // Validate the region DTO
+            //   // var validationResult = _regionValidator.Validate(region);
 
-                // If validation fails, return BadRequest with the validation errors
-                if (!validationResult.IsValid)
-                {
-                    return BadRequest(new
-                    {
-                        TimeStamp = timeStamp,
-                        Message = "Validation failed",
-                        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
-                    });
-                }
+            //    // If validation fails, return BadRequest with the validation errors
+            //    if (!validationResult.IsValid)
+            //    {
+            //        return BadRequest(new
+            //        {
+            //            TimeStamp = timeStamp,
+            //            Message = "Validation failed",
+            //            Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
+            //        });
+            //    }
 
-                // Check if the region DTO is null
-                if (region == null)
-                {
-                    return BadRequest(new { Message = "Region data cannot be null." });
-                }
+            //    // Check if the region DTO is null
+            //    if (region == null)
+            //    {
+            //        return BadRequest(new { Message = "Region data cannot be null." });
+            //    }
 
-                // Add the new region to the repository
-                await _regionRepository.AddNewRegion(region);
+            //    // Add the new region to the repository
+            //    await _regionRepository.AddNewRegion(region);
 
-                // Return success message with timestamp
-                return Ok(new
-                {
-                    //TimeStamp = timeStamp,
-                    Message = "Region record created successfully"
-                });
-            }
-<<<<<<< HEAD
+            //    // Return success message with timestamp
+            //    return Ok(new
+            //    {
+            //        //TimeStamp = timeStamp,
+            //        Message = "Region record created successfully"
+            //    });
+            //}
+
         }
 
         //public async Task<IActionResult> AddNewRegion(RegionDTO region)
@@ -105,19 +105,19 @@ namespace HumanResourceApplication.Controllers
         //    }
         //}
 
-=======
-            catch (Exception ex)
-            {
-                // Return BadRequest with the exception message and timestamp in case of an error
-                return BadRequest(new
-                {
-                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                    Message = "An error occurred while adding the new region.",
-                    //Details = ex.Message
-                });
-            }
-        }   
->>>>>>> 496809e0f02fbd9324e188cef63b534505287cac
+
+        //    catch (Exception ex)
+        //    {
+        //        // Return BadRequest with the exception message and timestamp in case of an error
+        //        return BadRequest(new
+        //        {
+        //            TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+        //            Message = "An error occurred while adding the new region.",
+        //            //Details = ex.Message
+        //        });
+        //    }
+        //}   
+
         #endregion
 
         #region UpdateRegion
