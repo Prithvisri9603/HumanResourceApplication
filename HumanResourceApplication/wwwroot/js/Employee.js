@@ -56,7 +56,7 @@
         }
 
         // Job ID validation
-        const validJobIds = ["AC_ACCOUNT", "AC_MGR", "FI_ACCOUNT", "HR_REP", "IT_PROG", "MK_MAN"];
+        const validJobIds = ["AC_ACCOUNT", "AC_MGR", "FI_ACCOUNT", "HR_REP", "IT_PROG", "MK_MAN", "MK_REP", "PR_REP", "PU_CLERK", "PU_MAN", "SA_MAN", "SA_REP", "SH_CLERK", "ST_CLERK","ST_MAN"];
         if (!validJobIds.includes(employee.jobId)) {
             console.log("Job ID validation failed:", employee.jobId); // Debugging
             errors.push("Invalid Job ID. Please select a valid job.");
