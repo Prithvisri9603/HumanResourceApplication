@@ -97,35 +97,18 @@ namespace HumanResourceApplication.Controllers
 
         public async Task<IActionResult> AddCountry(CountryDTO country)
         {
-            /*try
-            {
-                var validationResult = await _countryValidator.ValidateAsync(country);
-                if (!validationResult.IsValid)
-                {
-                    return BadRequest(validationResult.Errors);
-                }
-                await _countryRepository.AddCountry(country);
-                return Ok("Record added successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }*/
+            var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
             try
             {
-                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-
-
-
-                // Check if the country already exists
+                
                 var existingCountry = await _countryRepository.GetCountryById(country.CountryId);
                 if (existingCountry != null)
                 {
                     throw new AlreadyExistsException($"Country '{country.CountryId}' already exists.");
                 }
 
-                // Validate the country data
+              
                 var validationResult = _countryValidator.Validate(country);
                 if (!validationResult.IsValid)
                 {
@@ -133,31 +116,22 @@ namespace HumanResourceApplication.Controllers
                     throw new CustomeValidationException(errors, timeStamp);
                 }
 
-                // Add the new country to the repository
+               
                 await _countryRepository.AddCountry(country);
 
-                // Return success response with timestamp
-                return Ok(new
-                {
-                    //TimeStamp = timeStamp,
-                    Message = "Country record created successfully"
-                });
+            
+                return Ok(new { Message = "Country record created successfully" });
             }
-
+            catch (AlreadyExistsException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
             catch (Exception ex)
             {
-                // Return BadRequest error response for any other exception
-                return BadRequest(new
-                {
-                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                    Message = ex.Message
-                });
+                return BadRequest(new { Message = ex.Message });
             }
-
-
         }
 
-        
         #endregion
 
         #region Update Country

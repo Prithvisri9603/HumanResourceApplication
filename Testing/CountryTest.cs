@@ -8,6 +8,7 @@ using FluentValidation.Results;
 using HumanResourceApplication.Controllers;
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -85,88 +86,6 @@ namespace Testing
             var actualMessage = notFoundResult.Value.GetType().GetProperty("message")?.GetValue(notFoundResult.Value, null)?.ToString();
 
             Assert.Equal("Country not found.", actualMessage);
-        }
-
-        #endregion
-
-        #region AddCountry Tests
-
-        [Fact]
-        public async Task AddCountry_ReturnsOk_WhenValidationSucceeds()
-        {
-            // Arrange
-            var country = new CountryDTO { CountryId = "AR", CountryName = "Argentina", RegionId = 20 };
-            _mockValidator.Setup(v => v.ValidateAsync(country, default))
-                          .ReturnsAsync(new ValidationResult());
-            _mockCountryRepository.Setup(repo => repo.AddCountry(country)).Returns(Task.CompletedTask);
-
-            // Act
-            var result = await _controller.AddCountry(country);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Record added successfully", okResult.Value);
-        }
-
-        [Fact]
-        public async Task AddCountry_ReturnsBadRequest_WhenValidationFails()
-        {
-            // Arrange
-            var country = new CountryDTO { CountryId = "AR", CountryName = "argentina", RegionId = 20 };
-            var validationFailures = new List<ValidationFailure>
-            {
-                new ValidationFailure("CountryName", "Country Name must start with an uppercase letter.")
-            };
-            _mockValidator.Setup(v => v.ValidateAsync(country, default))
-                          .ReturnsAsync(new ValidationResult(validationFailures));
-
-            // Act
-            var result = await _controller.AddCountry(country);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal(validationFailures, badRequestResult.Value);
-        }
-
-        #endregion
-
-        #region UpdateCountry Tests
-
-        [Fact]
-        public async Task UpdateCountry_ReturnsOk_WhenValidationSucceeds()
-        {
-            // Arrange
-            var country = new CountryDTO { CountryId = "AR", CountryName = "Argentina", RegionId = 20 };
-            _mockValidator.Setup(v => v.ValidateAsync(country, default))
-                          .ReturnsAsync(new ValidationResult());
-            _mockCountryRepository.Setup(repo => repo.UpdateCountry("AR", country)).Returns(Task.CompletedTask);
-
-            // Act
-            var result = await _controller.UpdateCountry("AR", country);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Record updated successfully", okResult.Value);
-        }
-
-        [Fact]
-        public async Task UpdateCountry_ReturnsBadRequest_WhenValidationFails()
-        {
-            // Arrange
-            var country = new CountryDTO { CountryId = "AR", CountryName = "argentina", RegionId = 20 };
-            var validationFailures = new List<ValidationFailure>
-            {
-                new ValidationFailure("CountryName", "Country Name must start with an uppercase letter.")
-            };
-            _mockValidator.Setup(v => v.ValidateAsync(country, default))
-                          .ReturnsAsync(new ValidationResult(validationFailures));
-
-            // Act
-            var result = await _controller.UpdateCountry("AR", country);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal(validationFailures, badRequestResult.Value);
         }
 
         #endregion

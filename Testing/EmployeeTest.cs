@@ -303,7 +303,7 @@ namespace Testing
             _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<EmployeeDTO>(), It.IsAny<CancellationToken>()))
                           .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-            _employeeRepoMock.Setup(r => r.ModifyEmployee(It.IsAny<int>(), It.IsAny<EmployeeDTO>()))
+            _employeeRepoMock.Setup(r => r.ModifyEmployee(It.IsAny<decimal>(), It.IsAny<EmployeeDTO>()))
                              .Returns(Task.CompletedTask);
 
             
