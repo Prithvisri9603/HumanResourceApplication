@@ -6,19 +6,30 @@
         event.preventDefault(); // Prevent the default form submission
         console.log("Form submitted!");
 
+        // Get the phone number and format it
+        let phone = $('#addPhone').val();
+        
+
+        // Create the employee object with all the data from the form
         const employee = {
             employeeId: $('#addEmployeeId').val(),
             firstName: $('#addFirstName').val(),
             lastName: $('#addLastName').val(),
             email: $('#addEmail').val(),
+            phone: phone, // Formatted phone number
             jobId: $('#addJobId').val(),
             commissionPct: parseFloat($('#addCommissionPct').val()),
-            departmentId: $('#addDepartmentId').val() ? parseFloat($('#addDepartmentId').val()) : null
+            departmentId: $('#addDepartmentId').val() ? parseFloat($('#addDepartmentId').val()) : null,
+            salary: parseFloat($('#addSalary').val()), // Salary
+            managerId: $('#addManagerId').val() ? parseInt($('#addManagerId').val()) : null // Manager ID
         };
 
         // Call the function to send employee data to the backend
         addEmployeeData(employee);
     });
+
+    
+
 
     // Function to send the new employee data to the backend
     function addEmployeeData(employee) {
@@ -31,7 +42,7 @@
         }
 
         $.ajax({
-            url: `/api/Employees/Add new Employee`, // Correct API endpoint for adding an employee
+            url: '/api/Employees/Add new Employee', // Correct API endpoint for adding an employee
             type: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
             contentType: 'application/json',
@@ -48,7 +59,7 @@
     }
 
 
-    
+
 
     // Search by First Name
     $('#searchEmployeeByFirstNameBtn').click(function () {
