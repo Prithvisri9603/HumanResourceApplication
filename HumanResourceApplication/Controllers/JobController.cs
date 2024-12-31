@@ -167,77 +167,6 @@ namespace HumanResourceApplication.Controllers
         //UPDATE
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateJob(string id, JobDTO jobDTO)
-        {
-            /*try
-            {
-                var validationResult = await _validator.ValidateAsync(jobDTO);
-
-                if (!validationResult.IsValid)
-                {
-                    return BadRequest(validationResult.Errors);
-                }
-                await _jobRepository.UpdateJob(id, jobDTO);
-                return Ok("Record Created Successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }*/
-
-            
-            try
-            {
-                // Capture the current timestamp in UTC ISO 8601 format
-                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-
-                // Validate the job DTO using the validator
-                var validationResult = await _validator.ValidateAsync(jobDTO);
-                if (!validationResult.IsValid)
-                {
-                    // Return a BadRequest response with validation errors if validation fails
-                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    return BadRequest(new
-                    {
-                        TimeStamp = timeStamp,
-                        Message = "Validation failed",
-                        Errors = errors
-                    });
-                }
-
-                // Check if the job exists in the repository (optional, depending on your logic)
-                var existingJob = await _jobRepository.GetJobById(id);
-                if (existingJob == null)
-                {
-                    throw new AlreadyExistsException($"Job with ID '{id}' not found.");
-                }
-
-                // Update the job if it exists
-                await _jobRepository.UpdateJob(id, jobDTO);
-
-                // Return a successful response
-                return Ok(new
-                {
-                    //TimeStamp = timeStamp,
-                    Message = "Job record updated successfully"
-                });
-            }
-            
-            catch (Exception ex)
-            {
-                // Return a general error message in case of unexpected exceptions
-                return BadRequest(new
-                {
-                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                    //Message = "An error occurred while updating the job.",
-                    Details = ex.Message
-                });
-            }
-        }
-
-        
-
-        /* [HttpPut("{id}")]
          public async Task<IActionResult> UpdateJob(string id,JobDTO jobDTO)
          {
              try
@@ -255,7 +184,7 @@ namespace HumanResourceApplication.Controllers
                  return BadRequest(ex.Message);
              }
          }
-        */
+        
 
 
 

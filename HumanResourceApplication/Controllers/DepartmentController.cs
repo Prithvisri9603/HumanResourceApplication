@@ -42,7 +42,7 @@ namespace HumanResourceApplication.Controllers
                  {
                      return BadRequest();
                  }
-
+ 
                 await _departmentrepository.AddDepartment(department);
                 return Ok("Record created successfully");
             }
@@ -125,7 +125,7 @@ namespace HumanResourceApplication.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "An error occurred." });
-            }*/  
+            }*/
 
         public async Task<IActionResult> UpdateDepartment(decimal departmentId, DepartmentDTO departmentdto)
         {
@@ -165,19 +165,18 @@ namespace HumanResourceApplication.Controllers
         #region GetMaximumSalary
         [Authorize(Roles = "Admin, HR Team")]
         [HttpGet("findmaxsalary/{department_id}")]
-         
         public async Task<IActionResult> GetMaximumSalary(decimal department_id)
         {
             try
             {
                 var result = await _departmentrepository.GetMaximumSalary(department_id);
-                if(result==null || !result.Any())
+                if (result == null || !result.Any())
                 {
                     return NotFound("No data found by this id");
                 }
                 return Ok(result);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return BadRequest(new { Message = "An error occurred." });
             }
@@ -232,7 +231,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "An error occurred."});
+                return BadRequest(new { Message = "An error occurred." });
             }
         }
 
@@ -252,7 +251,7 @@ namespace HumanResourceApplication.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "An error occurred." });
+                return BadRequest("Error deleting department.");
             }
         }
         #endregion
