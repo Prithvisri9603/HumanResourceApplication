@@ -118,6 +118,7 @@
     $('#updateJob').click(function () {
         const jobId = $('#updateJobId').val();
         const job = {
+            jobId: jobId,
             jobTitle: $('#updateJobTitle').val(),
             minSalary: parseFloat($('#updateMinSalary').val()),
             maxSalary: parseFloat($('#updateMaxSalary').val()),
