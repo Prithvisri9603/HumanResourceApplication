@@ -222,7 +222,7 @@ namespace HumanResourceApplication.Controllers
         //Updates employeeId and startDate on JobHistory table
         [Authorize(Roles = "Admin, HR Team")]
         [HttpPut("{empid}/{startDate}")]
-        /*
+        
         public async Task<IActionResult> UpdateJobHistory(decimal empid, DateOnly startDate, [FromQuery]DateOnly enddate)
         {
             try
@@ -234,8 +234,9 @@ namespace HumanResourceApplication.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }*/
+        }
 
+        /*
         public async Task<IActionResult> UpdateJobHistory(decimal empid, DateOnly startDate, [FromQuery] DateOnly endDate)
         {
             try
@@ -282,6 +283,7 @@ namespace HumanResourceApplication.Controllers
                 });
             }
         }
+        */
 
         #endregion
     }
