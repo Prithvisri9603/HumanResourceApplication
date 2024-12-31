@@ -599,30 +599,52 @@
                 <!-- Add Employee Form -->
                 <form id="addEmployeeForm">
                     <h2>Add Employee</h2>
+
+                    <!-- Employee ID -->
                     <label for="addEmployeeId">Employee ID:</label>
                     <input type="number" id="addEmployeeId" required><br>
 
+                    <!-- First Name -->
                     <label for="addFirstName">First Name:</label>
                     <input type="text" id="addFirstName" required><br>
 
+                    <!-- Last Name -->
                     <label for="addLastName">Last Name:</label>
                     <input type="text" id="addLastName" required><br>
 
+                    <!-- Email -->
                     <label for="addEmail">Email:</label>
-                    <input type="email" id="addEmail" required><br>
+                    <input type="text" id="addEmail" required><br>
 
+                    <!-- Job ID -->
                     <label for="addJobId">Job ID:</label>
                     <select id="addJobId" required>
-                        <option value="">Select a Job</option>
                         <option value="AC_ACCOUNT">AC_ACCOUNT</option>
                         <option value="AC_MGR">AC_MGR</option>
+                        <option value="AD_ASST">AD_ASST</option>
+                        <option value="AD_PRES">AD_PRES</option>
+                        <option value="AD_VP">AD_VP</option>
                         <option value="FI_ACCOUNT">FI_ACCOUNT</option>
-                        <!-- Add other job IDs as needed -->
+                        <option value="FI_MGR">FI_MGR</option>
+                        <option value="HR_REP">HR_REP</option>
+                        <option value="IT_PROG">IT_PROG</option>
+                        <option value="MK_MAN">MK_MAN</option>
+                        <option value="MK_REP">MK_REP</option>
+                        <option value="PR_REP">PR_REP</option>
+                        <option value="PU_CLERK">PU_CLERK</option>
+                        <option value="PU_MAN">PU_MAN</option>
+                        <option value="SA_MAN">SA_MAN</option>
+                        <option value="SA_REP">SA_REP</option>
+                        <option value="SH_CLERK">SH_CLERK</option>
+                        <option value="ST_CLERK">ST_CLERK</option>
+                        <option value="ST_MAN">ST_MAN</option>
                     </select><br>
 
+                    <!-- Commission Percentage -->
                     <label for="addCommissionPct">Commission %:</label>
                     <input type="number" id="addCommissionPct" step="0.01" min="0" max="1" required><br>
 
+                    <!-- Department ID -->
                     <label for="addDepartmentId">Department ID:</label>
                     <select id="addDepartmentId">
                         <option value="">Select a Department</option>
@@ -635,11 +657,17 @@
                         <option value="70">70</option>
                         <option value="80">80</option>
                         <option value="90">90</option>
-                        <!-- Add other department IDs as needed -->
                     </select><br>
 
+                    <!-- Submit Button -->
                     <button type="submit">Add Employee</button>
                 </form>
+
+                <!-- Error Messages Container -->
+                <div id="errorMessages" style="display:none;">
+                    <ul></ul>
+                </div>
+
 
                 <!-- Search Employee Section -->
                 <div id="searchEmployeeSection">
@@ -677,7 +705,7 @@
                     <p><strong>Department ID:</strong> <span id="departmentId"></span></p>
                 </div>
 
-           
+
                 <!-- Error message section -->
                 <div id="errorMessages">
                     <ul></ul>
