@@ -3,7 +3,7 @@
 
     // Handle Add Employee form submission
     $('#addEmployeeForm').submit(function (event) {
-        event.preventDefault();// Prevent the default form submission
+        event.preventDefault(); // Prevent the default form submission
         console.log("Form submitted!");
 
         const employee = {
@@ -16,93 +16,22 @@
             departmentId: $('#addDepartmentId').val() ? parseFloat($('#addDepartmentId').val()) : null
         };
 
-        // Validate the employee data
-        validateEmployee(employee);
+        // Call the function to send employee data to the backend
+        addEmployeeData(employee);
     });
-
-    function validateEmployee(employee) {
-        console.log("Validating employee:", employee);
-        $('#errorMessages').hide(); // Hide previous error messages
-        const errors = [];
-
-        // Employee ID validation
-        if (!employee.employeeId || employee.employeeId < 100 || employee.employeeId > 999) {
-            console.log("Employee ID validation failed:", employee.employeeId); // Debugging
-            errors.push("Employee ID must be a 3-digit number between 100 and 999.");
-        }
-
-        // Name validation
-        if (!/^[a-zA-Z]+$/.test(employee.firstName)) {
-            console.log("First Name validation failed:", employee.firstName); // Debugging
-            errors.push("First Name should only contain letters.");
-        }
-        if (!/^[A-Z]/.test(employee.firstName)) {
-            console.log("First Name starts with capital letter validation failed:", employee.firstName); // Debugging
-            errors.push("First Name should start with a capital letter.");
-        }
-        if (!/^[a-zA-Z]+$/.test(employee.lastName)) {
-            console.log("Last Name validation failed:", employee.lastName); // Debugging
-            errors.push("Last Name should only contain letters.");
-        }
-        if (!/^[A-Z]/.test(employee.lastName)) {
-            console.log("Last Name starts with capital letter validation failed:", employee.lastName); // Debugging
-            errors.push("Last Name should start with a capital letter.");
-        }
-
-        // Email validation
-        if (!/^[A-Z]+$/.test(employee.email)) {
-            console.log("Email validation failed:", employee.email); // Debugging
-            errors.push("Email must be in capital letters only.");
-        }
-
-        // Job ID validation
-        const validJobIds = ["AC_ACCOUNT", "AC_MGR", "FI_ACCOUNT", "HR_REP", "IT_PROG", "MK_MAN", "MK_REP", "PR_REP", "PU_CLERK", "PU_MAN", "SA_MAN", "SA_REP", "SH_CLERK", "ST_CLERK","ST_MAN"];
-        if (!validJobIds.includes(employee.jobId)) {
-            console.log("Job ID validation failed:", employee.jobId); // Debugging
-            errors.push("Invalid Job ID. Please select a valid job.");
-        }
-
-        // Commission percentage validation
-        if (employee.commissionPct < 0 || employee.commissionPct > 1) {
-            console.log("Commission percentage validation failed:", employee.commissionPct); // Debugging
-            errors.push("Commission percentage must be between 0 and 1.");
-        }
-
-        // Department ID validation
-        const validDepartmentIds = [10, 20, 30, 40, 50];
-        if (employee.departmentId && !validDepartmentIds.includes(employee.departmentId)) {
-            console.log("Department ID validation failed:", employee.departmentId); // Debugging
-            errors.push("Invalid Department ID. Please select a valid department.");
-        }
-
-        // If there are validation errors, display them
-        if (errors.length > 0) {
-            displayErrors(errors);
-        } else {
-            console.log("No validation errors, calling addEmployeeData"); // Debugging
-            // If no validation errors, submit data to the backend
-            addEmployeeData(employee);
-        }
-    }
-    // Function to display error messages
-    function displayErrors(errors) {
-        $('#errorMessages ul').empty();
-        errors.forEach(function (error) {
-            $('#errorMessages ul').append(`<li>${error}</li>`);
-        });
-        $('#errorMessages').show();
-    }
 
     // Function to send the new employee data to the backend
     function addEmployeeData(employee) {
         console.log('Sending employee data:', employee);
+        const token = localStorage.getItem('jwtToken'); // Ensure token is available
+
         if (!token) {
             alert('You are not authenticated. Please log in.');
             return;
         }
 
         $.ajax({
-            url: `/api/Employees/Add new Employee`, // Correct API endpoint for adding an employee 
+            url: `/api/Employees/Add new Employee`, // Correct API endpoint for adding an employee
             type: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
             contentType: 'application/json',
@@ -116,9 +45,10 @@
                 alert(errorMessage);
             }
         });
-
-
     }
+
+
+    
 
     // Search by First Name
     $('#searchEmployeeByFirstNameBtn').click(function () {
