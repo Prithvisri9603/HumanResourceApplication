@@ -34,6 +34,8 @@ namespace HumanResourceApplication.Controllers
 
         //private readonly IConfiguration _configuration;
 
+       
+
         public RegionController(IRegionRepository regionRepository, IValidator<RegionDTO> regionValidator)
 
         {
@@ -51,146 +53,24 @@ namespace HumanResourceApplication.Controllers
         [Authorize(Roles = "Admin")]
 
         [HttpPost("AddRegion")]
-
-
-        //var validationResult = await _regionValidator.ValidateAsync(region);
-
-
-        //    try
-
-        //    {
-
-        //        // Capture the current timestamp in UTC ISO 8601 format
-
-        //        var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-
-        //        // Validate the region DTO
-
-        //        var validationResult = _regionValidator.Validate(region);
-
-        //        // If validation fails, return BadRequest with the validation errors
-
-        //        if (!validationResult.IsValid)
-
-        //        {
-
-        //            return BadRequest(new
-
-        //            {
-
-        //                TimeStamp = timeStamp,
-
-        //                Message = "Validation failed",
-
-        //                Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
-
-        //            });
-
-        //        }
-
-        //        // Check if the region DTO is null
-
-        //        if (region == null)
-
-        //        {
-
-        //            return BadRequest(new { Message = "Region data cannot be null." });
-
-        //        }
-
-        //        // Add the new region to the repository
-
-        //        await _regionRepository.AddNewRegion(region);
-
-        //        // Return success message with timestamp
-
-        //        return Ok(new
-
-        //        {
-
-        //            //TimeStamp = timeStamp,
-
-        //            Message = "Region record created successfully"
-
-        //        });
-
-
-        //}
-
-        //catch (Exception )
-
-        //{
-
-        //    // Return BadRequest with the exception message and timestamp in case of an error
-
-        //    return BadRequest(new
-
-        //    {
-
-        //        TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-
-        //        Message = "An error occurred while adding the new region.",
-
-        //        //Details = ex.Message
-
-        //    });
-
-        //}
-
         public async Task<IActionResult> AddNewRegion(RegionDTO region)
-
         {
+
+
+          
+
 
             try
 
             {
 
-                var validationResult = await _regionValidator.ValidateAsync(region);
+                // Capture the current timestamp in UTC ISO 8601 format
 
-                if (!validationResult.IsValid)
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-                {
+        // Validate the region DTO
 
-                    return BadRequest(validationResult.Errors);
-
-                }
-
-                await _regionRepository.AddNewRegion(region);
-
-                return Ok("Record created successfully");
-
-            }
-
-            catch (Exception)
-
-            {
-
-                return BadRequest(new { Message = "An error occurred." });
-
-            }
-
-        }
-
-
-
-
-        #endregion
-
-        #region UpdateRegion
-
-        [Authorize(Roles = "Admin, HR Team")]
-
-        [HttpPut("Update")]
-
-        public async Task<IActionResult> UpdateRegion(decimal regionId, RegionDTO regiondto)
-
-        {
-
-            try
-
-            {
-
-                var validationResult = await _regionValidator.ValidateAsync(regiondto);
+                 var validationResult = _regionValidator.Validate(region);
 
                 // If validation fails, return BadRequest with the validation errors
 
@@ -198,116 +78,180 @@ namespace HumanResourceApplication.Controllers
 
                 {
 
-                    return BadRequest("Validation failed");
+                    return BadRequest(new
+
+                    {
+
+                        TimeStamp = timeStamp,
+
+                        Message = "Validation failed",
+
+                        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
+
+                    });
 
                 }
 
-                await _regionRepository.UpdateRegion(regionId, regiondto);
+                    // Check if the region DTO is null
 
-                return Ok("Record Modified Successfully");
+                if (region == null)
 
-            }
+                 {
+
+                        return BadRequest(new { Message = "Region data cannot be null." });
+
+                  }
+
+             /// Add the new region to the repository
+
+               await _regionRepository.AddNewRegion(region);
+
+                // Return success message with timestamp
+
+               return Ok(new
+
+                {
+
+                //TimeStamp = timeStamp,
+
+                Message = "Region record created successfully"
+
+                });
+
+                }
 
             catch (Exception)
 
             {
 
-                return BadRequest(new { Message = "An error occurred." });
+                // Return BadRequest with the exception message and timestamp in case of an error
+
+                return BadRequest(new
+
+               {
+
+                  TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+
+                    Message = "An error occurred while adding the new region.",
+
+                //Details = ex.Message
+
+                });
+
+            }
+          }
+
+
+
+
+
+
+
+#endregion
+
+        #region UpdateRegion
+
+[Authorize(Roles = "Admin, HR Team")]
+
+        [HttpPut("Update")]
+
+        public async Task<IActionResult> UpdateRegion(decimal regionId, RegionDTO regiondto)
+
+        {
+
+
+
+            try
+
+            {
+
+                // Capture the current timestamp in UTC ISO 8601 format
+
+                var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                // Validate the region DTO
+
+                var validationResult = _regionValidator.Validate(regiondto);
+
+                // If validation fails, return BadRequest with the validation errors
+
+                if (!validationResult.IsValid)
+
+                {
+
+                    return BadRequest(new
+
+                    {
+
+                        TimeStamp = timeStamp,
+
+                        Message = "Validation failed",
+
+                        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
+
+                    });
+
+                }
+
+                // Check if the region DTO is null
+
+                if (regiondto == null)
+
+                {
+
+                    return BadRequest(new { Message = "Region data cannot be null." });
+
+                }
+
+                // Check if the region exists in the repository
+
+                var existingRegion = await _regionRepository.GetRegionById(regionId);
+
+                if (existingRegion == null)
+
+                {
+
+                    return BadRequest(new { Message = "Region not found." });
+
+                }
+
+                // Update the region in the repository
+
+                await _regionRepository.UpdateRegion(regionId, regiondto);
+
+                // Return success message with timestamp
+
+                return Ok(new
+
+                {
+
+                    //TimeStamp = timeStamp,
+
+                    Message = "Region record updated successfully"
+
+                });
 
             }
 
+            catch (Exception ex)
 
-            //try
+            {
 
-            //{
+                // Return BadRequest with the exception message and timestamp in case of an error
 
-            //    // Capture the current timestamp in UTC ISO 8601 format
+                return BadRequest(new
 
-            //    var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                {
 
-            //    // Validate the region DTO
+                    TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
 
-            //    var validationResult = _regionValidator.Validate(regiondto);
+                    Message = "An error occurred while updating the region.",
 
-            //    // If validation fails, return BadRequest with the validation errors
+                    Details = ex.Message
 
-            //    if (!validationResult.IsValid)
+                });
 
-            //    {
-
-            //        return BadRequest(new
-
-            //        {
-
-            //            TimeStamp = timeStamp,
-
-            //            Message = "Validation failed",
-
-            //            Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList()
-
-            //        });
-
-            //    }
-
-            //    // Check if the region DTO is null
-
-            //    if (regiondto == null)
-
-            //    {
-
-            //        return BadRequest(new { Message = "Region data cannot be null." });
-
-            //    }
-
-            //    // Check if the region exists in the repository
-
-            //    var existingRegion = await _regionRepository.GetRegionById(regionId);
-
-            //    if (existingRegion == null)
-
-            //    {
-
-            //        return BadRequest(new { Message = "Region not found." });
-
-            //    }
-
-            //    // Update the region in the repository
-
-            //    await _regionRepository.UpdateRegion(regionId, regiondto);
-
-            //    // Return success message with timestamp
-
-            //    return Ok(new
-
-            //    {
-
-            //        //TimeStamp = timeStamp,
-
-            //        Message = "Region record updated successfully"
-
-            //    });
-
-            //}
-
-            //catch (Exception ex)
-
-            //{
-
-            //    // Return BadRequest with the exception message and timestamp in case of an error
-
-            //    return BadRequest(new
-
-            //    {
-
-            //        TimeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-
-            //        Message = "An error occurred while updating the region.",
-
-            //        Details = ex.Message
-
-            //    });
-
-            //}
+            }
 
         }
 
@@ -449,9 +393,11 @@ namespace HumanResourceApplication.Controllers
 
     }
 
+}
+
     #endregion
 
-}
+
 
 
 

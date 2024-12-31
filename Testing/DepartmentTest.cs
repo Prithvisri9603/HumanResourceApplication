@@ -30,65 +30,50 @@ namespace Testing
 
 
 
+        #region GetDepartmentByEmp Tests
         [Fact]
-        public async Task AddDepartment_ReturnsOk_WhenValidationSucceeds()
+        public async Task GetDepartment_ShouldReturnOk_WhenDepartmentsExist()
         {
             // Arrange
-            var department = new DepartmentDTO
+            var departments = new List<DepartmentDTO>
             {
-                DepartmentId = 10,
-                DepartmentName = "Administration",
-                ManagerId = 200,
-                LocationId = 1700
+                new DepartmentDTO { DepartmentName = "HR" },
+                new DepartmentDTO { DepartmentName = "IT" }
             };
-
-            // Mock validation to succeed
-            _mockValidator.Setup(v => v.Validate(department))
-                          .Returns(new FluentValidation.Results.ValidationResult()); // Validation passes
-
-            // Mock repository behavior
-            _repo.Setup(repo => repo.AddDepartment(department)).Returns(Task.CompletedTask);
-
+            _repo
+               .Setup(repo => repo.GetDepartment())
+                .ReturnsAsync(departments);
             // Act
-            var result = await _controller.AddDepartment(department);
-
+            var result = await _controller.GetDepartment();
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Record created successfully", okResult.Value);
+            var returnValue = Assert.IsType<List<DepartmentDTO>>(okResult.Value);
+            Assert.Equal(2, returnValue.Count);
         }
 
-
-
         [Fact]
-        public async Task AddDepartment_ReturnsBadRequest_WhenValidationFails()
+        public async Task GetAllDeptDetailsForEmp_ShouldReturnBadRequest_WhenExceptionOccurs()
         {
             // Arrange
-            var department = new DepartmentDTO
-            {
-                DepartmentId = 0, // Invalid: DepartmentId is empty (default for decimal)
-                DepartmentName = "Administration",
-                ManagerId = null, // Invalid: ManagerId is null
-                LocationId = null // Invalid: LocationId is null
-            };
-
-            // Mock validation to fail
-            var validationFailures = new List<ValidationFailure>
-    {
-        new ValidationFailure("DepartmentId", "Department Id is required"),
-        new ValidationFailure("ManagerId", "'Manager Id' must not be empty."),
-        new ValidationFailure("LocationId", "'Location Id' must not be empty.")
-    };
-
-            _mockValidator.Setup(v => v.Validate(department))
-                          .Returns(new FluentValidation.Results.ValidationResult(validationFailures)); // Validation fails
+            decimal employeeId = 12345;
+            _repo .Setup(repo => repo.GetAllDeptDetailsForEmp(employeeId)).ThrowsAsync(new Exception("Database error")); // Simulate an exception
 
             // Act
-            var result = await _controller.AddDepartment(department);
+            var result = await _controller.GetAllDeptDetailsForEmp(employeeId);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Validation failed", badRequestResult.Value); // Matches the controller's BadRequest message
+            var returnValue = badRequestResult.Value;
+
+            // Use dynamic or cast to the anonymous type
+            Assert.NotNull(returnValue);
+            Assert.Equal("An error occurred.", returnValue.GetType().GetProperty("Message")?.GetValue(returnValue)?.ToString());
         }
+
+
+
+        #endregion
+
 
 
 

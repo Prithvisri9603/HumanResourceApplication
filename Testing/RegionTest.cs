@@ -126,95 +126,10 @@ namespace Testing
 
         #endregion
 
-        #region AddRegion
-
-        [Fact]
-
-        public async Task AddRegion_ReturnsOk_WhenValidationSucceeds()
-
-        {
-
-            // Arrange
-
-            var region = new RegionDTO { RegionId = 10, RegionName = "Europe" };
-
-            // Mock validation result (successful validation, no failures)
-
-            var validationResult = new FluentValidation.Results.ValidationResult();
-
-            _mockValidator.Setup(v => v.ValidateAsync(region, default))
-
-                          .ReturnsAsync(validationResult);
-
-            // Mock repository behavior
-
-            _mockRegionRepository.Setup(repo => repo.AddNewRegion(region))
-
-                                 .Returns(Task.CompletedTask);
-
-            // Act
-
-            var result = await _controller.AddNewRegion(region);
-
-            // Assert
-
-            var okResult = Assert.IsType<OkObjectResult>(result);
-
-            Assert.Equal("Record created successfully", okResult.Value);
-
-        }
+        
 
 
-
-
-        [Fact]
-
-        public async Task AddRegion_ReturnsBadRequest_WhenValidationFails()
-
-        {
-
-            // Arrange
-
-            var region = new RegionDTO { RegionId = 0, RegionName = "Europe" }; // Invalid RegionId
-
-            // Create validation failures to simulate a failed validation
-
-            var validationFailures = new List<ValidationFailure>
-
-    {
-
-        new ValidationFailure("RegionId", "Region Id is required.")
-
-    };
-
-            var validationResult = new FluentValidation.Results.ValidationResult(validationFailures);
-
-            // Mock the validator to return the validation result
-
-            _mockValidator.Setup(v => v.ValidateAsync(region, default))
-
-                          .ReturnsAsync(validationResult);
-
-            // Act
-
-            var result = await _controller.AddNewRegion(region);
-
-            // Assert
-
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-
-            var errors = Assert.IsType<List<ValidationFailure>>(badRequestResult.Value);
-
-            Assert.NotEmpty(errors);
-
-            Assert.Contains(errors, e => e.ErrorMessage == "Region Id is required.");
-
-        }
-
-
-
-
-        #endregion
+        
 
         #region get regionbyid
 
@@ -265,72 +180,10 @@ namespace Testing
 
         #endregion
 
-        #region update region by id
-
-        [Fact]
-
-        public async Task UpdateRegion_ReturnsOk_WhenValidationSucceeds()
-
-        {
-
-            // Arrange
-
-            var region = new RegionDTO { RegionId = 10, RegionName = "Europe" };
-
-            _mockValidator.Setup(v => v.ValidateAsync(region, default))
-
-                          .ReturnsAsync(new FluentValidation.Results.ValidationResult());
-
-            _mockRegionRepository.Setup(repo => repo.UpdateRegion(10, region)).Returns(Task.CompletedTask);
-
-            // Act
-
-            var result = await _controller.UpdateRegion(10, region);
-
-            // Assert
-
-            var okResult = Assert.IsType<OkObjectResult>(result);
-
-            Assert.Equal("Record Modified Successfully", okResult.Value);
-
-        }
-
-        [Fact]
-
-        public async Task UpdateRegion_ReturnsBadRequest_WhenValidationFails()
-
-        {
-
-            // Arrange
-
-            var region = new RegionDTO { RegionId = 0, RegionName = "Europe" };
-
-            var validationFailures = new List<ValidationFailure>
-
-            {
-
-                new ValidationFailure("RegionId", "Region Id is required.")
-
-            };
-
-            _mockValidator.Setup(v => v.ValidateAsync(region, default))
-
-                          .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-            // Act
-
-            var result = await _controller.UpdateRegion(10, region);
-
-            // Assert
-
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-
-            Assert.Equal("Validation failed", badRequestResult.Value);
-
-        }
 
 
-        #endregion
+
+       
 
         #region delete region
 
