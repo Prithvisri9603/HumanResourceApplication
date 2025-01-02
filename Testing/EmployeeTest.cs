@@ -6,6 +6,7 @@ using HumanResourceApplication.DTO;
 using HumanResourceApplication.Services;
 using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
 
@@ -16,12 +17,13 @@ namespace Testing
             private readonly Mock<IEmployeeRepo> _employeeRepoMock;
             private readonly Mock<IValidator<EmployeeDTO>> _validatorMock;
             private readonly EmployeesController _controller;
+            private readonly IConfiguration _configuration;
 
-            public EmployeeTest()
+        public EmployeeTest()
             {
                 _employeeRepoMock = new Mock<IEmployeeRepo>();
                 _validatorMock = new Mock<IValidator<EmployeeDTO>>();
-                _controller = new EmployeesController(_employeeRepoMock.Object, _validatorMock.Object);
+                _controller = new EmployeesController(_employeeRepoMock.Object, _validatorMock.Object, _configuration);
             }
 
         [Fact]

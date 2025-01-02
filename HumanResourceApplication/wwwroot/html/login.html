@@ -67,6 +67,7 @@
 
 </head>
 <body>
+    <img src="https://hracdn-dfaaeje2arbshpg6.a01.azurefd.net/logocontainer/HRA-logo.png" />
     <form id="loginForm">
         <h1>Login</h1>
         <label for="username">Username</label>
@@ -90,7 +91,7 @@
                 };
 
                 $.ajax({
-                    url: 'https://localhost:7193/api/Auth/Login',
+                    url: '/api/Auth/Login',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(loginData),

@@ -2,6 +2,7 @@
 using HumanResourceApplication.DTO;
 using HumanResourceApplication.Models;
 using HumanResourceApplication.Services;
+using HumanResourceApplication.Utility;
 using HumanResourceApplication.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,16 +15,19 @@ namespace HumanResourceApplication.Controllers
     {
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IValidator<EmployeeDTO> _employeeValidator;
-        public EmployeesController(IEmployeeRepo employeeRepo, IValidator<EmployeeDTO> employeevalidator)
+
+        private readonly IConfiguration _configuration;
+        public EmployeesController(IEmployeeRepo employeeRepo, IValidator<EmployeeDTO> employeevalidator, IConfiguration configuration)
         {
             _employeeRepo = employeeRepo;
             _employeeValidator = employeevalidator;
+            _configuration = configuration;
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("Get Emp By Id")]
+        //[Authorize(Roles = "Admin")]
+        
         // Get employee by ID
-        [HttpGet("{id}")]
+        //[HttpGet("{id}")]
 
 
         [Authorize(Roles = "Admin")]
@@ -42,8 +46,10 @@ namespace HumanResourceApplication.Controllers
             }
             try
             {
-                await _employeeRepo.AddEmployee(employee);
-                return Ok("Record Created Successfully");
+                //await _employeeRepo.AddEmployee(employee);
+                //return Ok("Record Created Successfully");
+                Helper.PublishToEventGrid(_configuration, employee);
+                return Ok("Event Triggered");
             }
             catch (Exception ex)
             {

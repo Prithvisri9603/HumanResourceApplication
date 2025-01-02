@@ -94,6 +94,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FoodServicePortal",
+        Version = "v1",
+        Description = "PFood Delivery Service API Documentation",
+        Contact = new OpenApiContact
+        {
+            Name = "Admin",
+            Email = "admin1@example.com"
+        }
+    });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Scheme = "Bearer",
@@ -122,11 +133,17 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodServicePortal v1");
+    c.RoutePrefix = string.Empty; // This will serve Swagger UI at the root URL
+});
 
 //Setting up AJAX
 app.UseStaticFiles();

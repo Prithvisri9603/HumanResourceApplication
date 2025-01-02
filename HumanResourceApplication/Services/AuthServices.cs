@@ -39,13 +39,14 @@ namespace HumanResourceApplication.Services
 
 
             var ruser = _context.Users
-   .FromSqlInterpolated($@"
-    SELECT * 
-   FROM Users
-   WHERE Username = {username} 
-   AND Passwordhash= CONVERT(VARCHAR(255), HASHBYTES('SHA2_256', {password}), 2)")
-   .Include(u => u.Role)
-   .FirstOrDefault();
+     .FromSqlInterpolated($@"
+        SELECT * 
+        FROM Users
+        WHERE Username = {username} 
+        AND Passwordhash = CONVERT(VARCHAR(255), HASHBYTES('SHA2_256', {password}), 2)")
+     .Include(u => u.Role)
+     .FirstOrDefault();
+
 
             if (ruser == null) return null;
 
