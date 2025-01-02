@@ -24,12 +24,13 @@ namespace HumanResourceApplication.Controllers
             _configuration = configuration;
         }
 
-        //[Authorize(Roles = "Admin")]
-        
-        // Get employee by ID
-        //[HttpGet("{id}")]
+ #region AddEmployee Method
 
-
+        /// <summary>
+        /// Adds a new employee.
+        /// </summary>
+        /// <param name="employee">The employee data transfer object.</param>
+        /// <returns>An IActionResult indicating the result of the operation.</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost("Add new Employee")]
         public async Task<IActionResult> AddEmployee(EmployeeDTO employee)
@@ -58,6 +59,17 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region ModifyEmployee Method
+
+        /// <summary>
+        /// Modifies an existing employee.
+        /// </summary>
+        /// <param name="employeeId">The employee ID.</param>
+        /// <param name="employee">The updated employee data transfer object.</param>
+        /// <returns>An IActionResult indicating the result of the operation.</returns>
         [Authorize(Roles = "Admin")]
         [HttpPut("Modify")]
         public async Task<IActionResult> ModifyEmployee([FromQuery] int employeeId, [FromBody] EmployeeDTO employee)
@@ -86,6 +98,17 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region AssignJob Method
+
+        /// <summary>
+        /// Assigns a new job to an employee.
+        /// </summary>
+        /// <param name="currentJobId">The current job ID.</param>
+        /// <param name="newJobId">The new job ID.</param>
+        /// <returns>An IActionResult indicating the result of the operation.</returns>
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Assign Job")]
         public async Task<IActionResult> AssignJob([FromQuery] string currentJobId, [FromQuery] string newJobId)
@@ -101,7 +124,16 @@ namespace HumanResourceApplication.Controllers
             }
         }
 
+        #endregion
 
+        #region AssignManager Method
+
+        /// <summary>
+        /// Assigns a manager to an employee.
+        /// </summary>
+        /// <param name="employeeId">The employee ID.</param>
+        /// <param name="managerId">The manager ID.</param>
+        /// <returns>An IActionResult indicating the result of the operation.</returns>
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Assign Manager")]
         public async Task<IActionResult> AssignMan(decimal employeeId, decimal managerId)
@@ -116,6 +148,17 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region AssignDepartment Method
+
+        /// <summary>
+        /// Assigns a department to an employee.
+        /// </summary>
+        /// <param name="employeeId">The employee ID.</param>
+        /// <param name="departmentId">The department ID.</param>
+        /// <returns>An IActionResult indicating the result of the operation.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpPut("Assign Department")]
         public async Task<IActionResult> AssignDep([FromQuery] decimal employeeId, [FromQuery] decimal departmentId)
@@ -130,11 +173,13 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        #region Update Commission for Sales Department
+
+        #endregion
+
+        #region UpdateCommissionForDepartment Method
 
         /// <summary>
-        /// Updates the commission percentage for employees in the sales department. 
-        /// This endpoint is accessible to users with the roles Admin or HR Team.
+        /// Updates the commission percentage for employees in the sales department.
         /// </summary>
         /// <param name="departmentId">The ID of the sales department.</param>
         /// <param name="commissionPercentage">The new commission percentage to be applied.</param>
@@ -155,8 +200,16 @@ namespace HumanResourceApplication.Controllers
         }
 
         #endregion
+
+        #region FindByFirstName Method
+
+        /// <summary>
+        /// Finds an employee by their first name.
+        /// </summary>
+        /// <param name="firstName">The first name of the employee.</param>
+        /// <returns>An IActionResult containing the employee data.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
-        [HttpGet("find by fisrt name")]
+        [HttpGet("find by first name")]
         public async Task<IActionResult> FindByFirstName(string firstName)
         {
             try
@@ -169,6 +222,16 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region FindByEmail Method
+
+        /// <summary>
+        /// Finds an employee by their email address.
+        /// </summary>
+        /// <param name="email">The email address of the employee.</param>
+        /// <returns>An IActionResult containing the employee data.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("findemail")]
         public async Task<IActionResult> FindByEmail(string email)
@@ -183,6 +246,16 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region FindByPhoneNumber Method
+
+        /// <summary>
+        /// Finds an employee by their phone number.
+        /// </summary>
+        /// <param name="phone">The phone number of the employee.</param>
+        /// <returns>An IActionResult containing the employee data.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find phone")]
         public async Task<IActionResult> FindByPhoneNumber(string phone)
@@ -197,6 +270,15 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region FindAllEmployeeWithNoCommission Method
+
+        /// <summary>
+        /// Finds all employees with no commission.
+        /// </summary>
+        /// <returns>An IActionResult containing the list of employees with no commission.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find All Employee With No Commission")]
         public async Task<IActionResult> FindAllEmployeeWithNoCommission()
@@ -211,6 +293,16 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region FindTotalCommissionIssuedToDepartment Method
+
+        /// <summary>
+        /// Finds the total commission issued to a department.
+        /// </summary>
+        /// <param name="departmentId">The department ID.</param>
+        /// <returns>An IActionResult containing the total commission issued to the department.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find Total Commission Issued To Employee")]
         public async Task<IActionResult> FindTotalCommissionIssuedToDepartment(decimal departmentId)
@@ -225,6 +317,16 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region ListAllEmployeesByDepartment Method
+
+        /// <summary>
+        /// Lists all employees by department.
+        /// </summary>
+        /// <param name="departmentId">The department ID.</param>
+        /// <returns>An IActionResult containing the list of employees in the department.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("list All Employees by department")]
         public async Task<IActionResult> ListAllEmployeesByDepartment(decimal departmentId)
@@ -239,6 +341,15 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region ListAllManagerDetails Method
+
+        /// <summary>
+        /// Lists all manager details.
+        /// </summary>
+        /// <returns>An IActionResult containing the list of managers.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("list All Manager Details")]
         public async Task<IActionResult> ListAllManagerDetails()
@@ -253,11 +364,13 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
-        #region Employee Count By Location
+
+        #endregion
+
+        #region CountAllEmployeesGroupByLocation Method
 
         /// <summary>
-        /// Counts all employees grouped by their respective office locations. 
-        /// This endpoint is accessible to users with the roles Admin, HR Team, or Employee.
+        /// Counts all employees grouped by their respective office locations.
         /// </summary>
         /// <returns>Returns the employee count grouped by location or a Bad Request response if an error occurs.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
@@ -277,6 +390,13 @@ namespace HumanResourceApplication.Controllers
 
         #endregion
 
+        #region FindMaxSalaryOfJobByEmployeeId Method
+
+        /// <summary>
+        /// Finds the maximum salary of a job by employee ID.
+        /// </summary>
+        /// <param name="empid">The employee ID.</param>
+        /// <returns>An IActionResult containing the job title and maximum salary.</returns>
         [Authorize(Roles = "Admin,HR Team,Employee")]
         [HttpGet("find max salary of job")]
         public async Task<IActionResult> FindMaxSalaryOfJobByEmployeeId(decimal empid)
@@ -291,6 +411,17 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
+
+        #region UpdateEmployeeEmail Method
+
+        /// <summary>
+        /// Updates the email address of an employee.
+        /// </summary>
+        /// <param name="currentemail">The current email address.</param>
+        /// <param name="newemail">The new email address.</param>
+        /// <returns>An IActionResult indicating the result of the operation.</returns>
         [Authorize(Roles = "Admin,HR Team")]
         [HttpPut("Update Email")]
         public async Task<IActionResult> UpdateEmployeeEmail(string currentemail, string newemail)
@@ -305,6 +436,8 @@ namespace HumanResourceApplication.Controllers
                 return BadRequest(new { timeStamp = DateOnly.FromDateTime(DateTime.Now), message = ex.Message });
             }
         }
+
+        #endregion
     }
 }
 
