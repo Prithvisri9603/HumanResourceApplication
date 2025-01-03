@@ -47,9 +47,9 @@ namespace HumanResourceApplication.Controllers
             }
             try
             {
-                //await _employeeRepo.AddEmployee(employee);
-                //return Ok("Record Created Successfully");
-                Helper.PublishToEventGrid(_configuration, employee);
+                await _employeeRepo.AddEmployee(employee);
+                return Ok("Record Created Successfully");
+                //Helper.PublishToEventGrid(_configuration, employee);
                 return Ok("Event Triggered");
             }
             catch (Exception ex)
@@ -88,7 +88,8 @@ namespace HumanResourceApplication.Controllers
             try
             {
                 decimal empId = Convert.ToDecimal(employeeId);
-                await _employeeRepo.ModifyEmployee(empId, employee);
+                //await _employeeRepo.ModifyEmployee(empId, employee);
+                Helper.PublishToEventGrid(_configuration, employee);
                 return Ok("Record Modified Successfully");
             }
             catch (Exception ex)
