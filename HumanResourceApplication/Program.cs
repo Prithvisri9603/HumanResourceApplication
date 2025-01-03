@@ -96,9 +96,9 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "FoodServicePortal",
+        Title = "HumanResourceApplication",
         Version = "v1",
-        Description = "PFood Delivery Service API Documentation",
+        Description = "Human Resource Application",
         Contact = new OpenApiContact
         {
             Name = "Admin",
@@ -141,7 +141,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FoodServicePortal v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HumanResourceApplication v1");
     c.RoutePrefix = string.Empty; // This will serve Swagger UI at the root URL
 });
 
